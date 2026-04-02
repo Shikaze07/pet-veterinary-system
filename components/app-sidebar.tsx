@@ -26,7 +26,7 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/admin/dashboard",
       icon: (
         <LayoutDashboardIcon
         />
@@ -40,17 +40,58 @@ const data = {
         />
       ),
     },
+    // {
+    //   title: "Client & Pet Management",
+    //   url: "/admin/client-management",
+    //   icon: (
+    //     <ChartBarIcon
+    //     />
+    //   ),
+    // },
+
     {
-      title: "Client & Pet Management",
-      url: "/admin/client-management",
+      title: "Owner",
+      url: "/admin/owner",
       icon: (
-        <ChartBarIcon
+        <FolderIcon
         />
       ),
     },
     {
-      title: "Appointment Management",
-      url: "/admin/appointment-management",
+      title: "Pet",
+      url: "/admin/pet",
+      icon: (
+        <FolderIcon
+        />
+      ),
+    },
+    {
+      title: "Consultation",
+      url: "/admin/consultation",
+      icon: (
+        <FolderIcon
+        />
+      ),
+    },
+    {
+      title: "Vaccination",
+      url: "/admin/vaccination",
+      icon: (
+        <FolderIcon
+        />
+      ),
+    },
+    {
+      title: "Appointments",
+      url: "/admin/appointment",
+      icon: (
+        <FolderIcon
+        />
+      ),
+    },
+    {
+      title: "Medication",
+      url: "/admin/medication",
       icon: (
         <FolderIcon
         />

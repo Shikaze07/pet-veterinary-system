@@ -6,89 +6,133 @@ generator client {
 datasource db {
   provider = "mysql"
 }
-
-model User {
-  id          Int       @id @default(autoincrement())
-  firstName   String
-  lastName    String
-  username    String    @unique
-  email       String    @unique
-  password    String
-  phone       String?
-  dateOfBirth DateTime?
-  role        Role      @default(CLIENT)
-  status      Status    @default(ACTIVE)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  client      Client?
-}
-
-model Client {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique
-  address   String?
-  createdAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [id])
-  pets      Pet[]
-  appointments Appointment[]
-}
-
-model Pet {
-  id        Int      @id @default(autoincrement())
-  clientId  Int
-  name      String
-  species   String
-  breed     String?
-  age       Int?
-  gender    String?
-  createdAt DateTime @default(now())
-
-  client    Client   @relation(fields: [clientId], references: [id])
-  medicalRecords MedicalRecord[]
-  appointments   Appointment[]
-}
-
-model MedicalRecord {
-  id          Int      @id @default(autoincrement())
-  petId       Int
-  diagnosis   String?
-  treatment   String?
-  vaccination String?
-  notes       String?
-  recordDate  DateTime
-  createdAt   DateTime @default(now())
-
-  pet         Pet      @relation(fields: [petId], references: [id])
-}
-
-model Appointment {
-  id              Int      @id @default(autoincrement())
-  clientId        Int
-  petId           Int
-  appointmentDate DateTime
-  reason          String?
-  status          AppointmentStatus @default(PENDING)
-  createdAt       DateTime @default(now())
-
-  client          Client   @relation(fields: [clientId], references: [id])
-  pet             Pet      @relation(fields: [petId], references: [id])
-}
-
 enum Role {
   ADMIN
-  CLIENT
-}
-
-enum Status {
-  ACTIVE
-  INACTIVE
+  OWNER
 }
 
 enum AppointmentStatus {
   PENDING
-  APPROVED
+  CONFIRMED
   CANCELLED
   COMPLETED
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PAID
+}
+
+model User {
+  id        String   @id @default(uuid())
+  firstName      String
+  middleName      String?
+  lastName      String
+  email     String   @unique
+  password  String
+  phone     String?
+  role      Role     @default(OWNER)
+  createdAt DateTime @default(now())
+
+  owner     Owner?
+}
+
+model Owner {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  address   String?
+
+  user      User     @relation(fields: [userId], references: [id])
+  pets      Pet[]
+  invoices  Invoice[]
+  appointments Appointment[]
+}
+
+model Pet {
+  id        String   @id @default(uuid())
+  name      String
+  species   String
+  breed     String?
+  gender    String?
+  age       Float?
+  weight    Float?
+  color     String?
+
+  ownerId   String?
+  owner     Owner?    @relation(fields: [ownerId], references: [id])
+
+  consultations Consultation[]
+  vaccinations  Vaccination[]
+  invoices      Invoice[]   
+  appointments  Appointment[]
+}
+
+model Consultation {
+  id          String   @id @default(uuid())
+  petId       String
+  date        DateTime @default(now())
+  symptoms    String
+  diagnosis   String
+  treatment   String
+  cost        Float
+
+  pet         Pet      @relation(fields: [petId], references: [id])
+}
+
+model Vaccination {
+  id          String   @id @default(uuid())
+  petId       String
+  vaccineName String
+  dateGiven   DateTime
+  nextDue     DateTime?
+  notes       String?
+
+  pet         Pet      @relation(fields: [petId], references: [id])
+}
+
+model Medication {
+  id           String  @id @default(uuid())
+  name         String
+  brand        String?
+  stock        Int
+  minStock     Int
+  price        Float
+}
+
+model Appointment {
+  id        String             @id @default(uuid())
+  ownerId   String
+  petId     String
+  date      DateTime
+  reason    String
+  status    AppointmentStatus @default(PENDING)
+  notes     String?
+
+  owner     Owner  @relation(fields: [ownerId], references: [id])
+  pet       Pet    @relation(fields: [petId], references: [id])
+}
+
+model Invoice {
+  id          String        @id @default(uuid())
+  ownerId     String
+  petId       String?
+  totalAmount Float
+  dueDate     DateTime
+  status      InvoiceStatus @default(UNPAID)
+
+  owner       Owner         @relation(fields: [ownerId], references: [id])
+  pet         Pet?          @relation(fields: [petId], references: [id])
+
+  items       InvoiceItem[]
+}
+
+model InvoiceItem {
+  id          String  @id @default(uuid())
+  invoiceId   String
+  description String
+  quantity    Int
+  price       Float
+  total       Float
+
+  invoice     Invoice @relation(fields: [invoiceId], references: [id])
 }
