@@ -29,13 +29,10 @@ export async function PUT(request, context) {
             },
             include: {
                 owner: {
-                    include: {
-                        user: {
-                            select: {
-                                firstName: true,
-                                lastName: true,
-                            }
-                        }
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
                     }
                 }
             }

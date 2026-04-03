@@ -39,8 +39,9 @@ const userSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(6, "Confirm password must be at least 6 characters"),
-  phone: z.string().optional(),
-  role: z.enum(["ADMIN", "OWNER"]),
+  phone: z.string().regex(/^09\d{9}$/, "Phone number must be 11 digits starting with 09"),
+  address: z.string().min(5, "Home address is required"),
+  role: z.enum(["ADMIN", "OWNER", "VET"]),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
@@ -155,10 +156,10 @@ export function AddUserModal() {
               <FieldError errors={[errors.email]} />
             </Field>
             <Field>
-              <FieldLabel htmlFor="phone">Phone Number</FieldLabel>
+              <FieldLabel htmlFor="phone">Phone Number *</FieldLabel>
               <Input
                 id="phone"
-                placeholder="+1 234 567 890"
+                placeholder="09123456789"
                 {...register("phone")}
                 disabled={isSubmitting}
               />
@@ -220,6 +221,18 @@ export function AddUserModal() {
           </div>
 
           <Field>
+            <FieldLabel htmlFor="address">Home Address *</FieldLabel>
+            <textarea
+              id="address"
+              placeholder="123 Main St, Anytown, AT 12345"
+              {...register("address")}
+              disabled={isSubmitting}
+              className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <FieldError errors={[errors.address]} />
+          </Field>
+
+          <Field>
             <FieldLabel htmlFor="role">User Role *</FieldLabel>
             <Select
               onValueChange={(value) => setValue("role", value)}
@@ -230,7 +243,8 @@ export function AddUserModal() {
                 <SelectValue placeholder="Select a role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ADMIN">Owner (Admin)</SelectItem>
+                <SelectItem value="ADMIN">Administrator</SelectItem>
+                <SelectItem value="VET">Veterinarian</SelectItem>
                 <SelectItem value="OWNER">Client (Pet Owner)</SelectItem>
               </SelectContent>
             </Select>

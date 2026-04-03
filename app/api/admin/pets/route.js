@@ -27,14 +27,11 @@ export async function GET(request) {
                 take: pageSize,
                 include: {
                     owner: {
-                        include: {
-                            user: {
-                                select: {
-                                    firstName: true,
-                                    lastName: true,
-                                    email: true
-                                }
-                            }
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true
                         }
                     }
                 },
@@ -83,13 +80,10 @@ export async function POST(request) {
             },
             include: {
                 owner: {
-                    include: {
-                        user: {
-                            select: {
-                                firstName: true,
-                                lastName: true,
-                            }
-                        }
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
                     }
                 }
             }

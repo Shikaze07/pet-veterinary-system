@@ -25,6 +25,11 @@ export const columns = [
         cell: ({ row }) => row.original.phone || "N/A",
     },
     {
+        accessorKey: "address",
+        header: "Address",
+        cell: ({ row }) => row.original.address || "N/A",
+    },
+    {
         accessorKey: "role",
         header: "Role",
         cell: ({ row }) => {

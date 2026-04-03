@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { firstName, middleName, lastName, email, password, phone, role } =
+    const { firstName, middleName, lastName, email, password, phone, address, role } =
       body;
 
     // Validate required fields
@@ -52,10 +52,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Only allow admin or owner roles
-    if (role !== "ADMIN" && role !== "OWNER") {
+    // Only allow admin, owner, or vet roles
+    if (role !== "ADMIN" && role !== "OWNER" && role !== "VET") {
       return NextResponse.json(
-        { error: "Invalid role. Must be ADMIN or OWNER." },
+        { error: "Invalid role. Must be ADMIN, OWNER, or VET." },
         { status: 400 }
       );
     }
@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
         email,
         password: hashed,
         phone: phone || null,
+        address: address || null,
         role,
       },
       select: {
@@ -88,17 +89,11 @@ export async function POST(request: NextRequest) {
         lastName: true,
         email: true,
         phone: true,
+        address: true,
         role: true,
         createdAt: true,
       },
     });
-
-    // If the role is OWNER, create the linked Owner record
-    if (role === "OWNER") {
-      await prisma.owner.create({
-        data: { userId: user.id },
-      });
-    }
 
     return NextResponse.json({ user }, { status: 201 });
   } catch (error) {

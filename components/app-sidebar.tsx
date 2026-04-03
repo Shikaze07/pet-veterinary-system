@@ -27,83 +27,53 @@ const data = {
     {
       title: "Dashboard",
       url: "/admin/dashboard",
-      icon: (
-        <LayoutDashboardIcon
-        />
-      ),
+      icon: <LayoutDashboardIcon />,
     },
     {
       title: "User Management",
-      url: "/admin/user-management",
-      icon: (
-        <UsersIcon
-        />
-      ),
-    },
-    // {
-    //   title: "Client & Pet Management",
-    //   url: "/admin/client-management",
-    //   icon: (
-    //     <ChartBarIcon
-    //     />
-    //   ),
-    // },
-
-    {
-      title: "Owner",
-      url: "/admin/owner",
-      icon: (
-        <FolderIcon
-        />
-      ),
+      url: "#",
+      icon: <UsersIcon />,
+      isActive: true,
+      items: [
+        {
+          title: "Staffs",
+          url: "/admin/staff",
+        },
+        {
+          title: "Owners",
+          url: "/admin/owner",
+        },
+      ],
     },
     {
       title: "Pet",
       url: "/admin/pet",
-      icon: (
-        <FolderIcon
-        />
-      ),
+      icon: <FolderIcon />,
     },
     {
       title: "Consultation",
       url: "/admin/consultation",
-      icon: (
-        <FolderIcon
-        />
-      ),
+      icon: <FolderIcon />,
     },
     {
       title: "Vaccination",
       url: "/admin/vaccination",
-      icon: (
-        <FolderIcon
-        />
-      ),
+      icon: <FolderIcon />,
     },
     {
       title: "Appointments",
       url: "/admin/appointment",
-      icon: (
-        <FolderIcon
-        />
-      ),
+      icon: <FolderIcon />,
     },
     {
       title: "Medication",
       url: "/admin/medication",
-      icon: (
-        <FolderIcon
-        />
-      ),
+      icon: <FolderIcon />,
     },
     {
       title: "Medical Records",
       url: "/admin/medical-records",
-      icon: (
-        <UsersIcon
-        />
-      ),
+      icon: <UsersIcon />,
     },
   ],
   navClouds: [

@@ -8,6 +8,7 @@ datasource db {
 }
 enum Role {
   ADMIN
+  VET
   OWNER
 }
 
@@ -31,21 +32,13 @@ model User {
   email     String   @unique
   password  String
   phone     String?
+  address   String?
   role      Role     @default(OWNER)
   createdAt DateTime @default(now())
 
-  owner     Owner?
-}
-
-model Owner {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  address   String?
-
-  user      User     @relation(fields: [userId], references: [id])
-  pets      Pet[]
-  invoices  Invoice[]
-  appointments Appointment[]
+  pets          Pet[]
+  invoices      Invoice[]
+  appointments  Appointment[]
 }
 
 model Pet {
@@ -59,7 +52,7 @@ model Pet {
   color     String?
 
   ownerId   String?
-  owner     Owner?    @relation(fields: [ownerId], references: [id])
+  owner     User?    @relation(fields: [ownerId], references: [id])
 
   consultations Consultation[]
   vaccinations  Vaccination[]
@@ -94,6 +87,7 @@ model Medication {
   id           String  @id @default(uuid())
   name         String
   brand        String?
+  category     String?
   stock        Int
   minStock     Int
   price        Float
@@ -108,7 +102,7 @@ model Appointment {
   status    AppointmentStatus @default(PENDING)
   notes     String?
 
-  owner     Owner  @relation(fields: [ownerId], references: [id])
+  owner     User   @relation(fields: [ownerId], references: [id])
   pet       Pet    @relation(fields: [petId], references: [id])
 }
 
@@ -120,7 +114,7 @@ model Invoice {
   dueDate     DateTime
   status      InvoiceStatus @default(UNPAID)
 
-  owner       Owner         @relation(fields: [ownerId], references: [id])
+  owner       User          @relation(fields: [ownerId], references: [id])
   pet         Pet?          @relation(fields: [petId], references: [id])
 
   items       InvoiceItem[]
