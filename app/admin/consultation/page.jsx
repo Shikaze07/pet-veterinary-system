@@ -1,4 +1,6 @@
+import { Suspense } from "react"
 import { ConsultationManagementClient } from "./consultation-client"
+import { ConsultationToolbar } from "./consultation-toolbar"
 import prisma from "@/lib/prisma"
 
 async function getConsultations(page, pageSize, search) {
@@ -52,13 +54,42 @@ async function getConsultations(page, pageSize, search) {
   }
 }
 
+async function ConsultationTable({ page, pageSize, search }) {
+  const { consultations, total } = await getConsultations(page, pageSize, search)
+  return (
+    <ConsultationManagementClient
+      consultations={consultations}
+      total={total}
+      page={page}
+      pageSize={pageSize}
+    />
+  )
+}
+
+function TableSkeleton() {
+  return (
+    <div className="rounded-xl border border-slate-200 overflow-hidden">
+      <div className="flex gap-4 px-4 py-3 bg-slate-50 border-b border-slate-200">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-4 w-1/4 rounded bg-slate-200 animate-pulse" />
+        ))}
+      </div>
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div key={i} className="flex gap-4 px-4 py-3 border-b border-slate-100 last:border-0">
+          {Array.from({ length: 4 }).map((_, j) => (
+            <div key={j} className="h-4 w-1/4 rounded bg-slate-100 animate-pulse" />
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default async function ConsultationPage({ searchParams }) {
   const params = await searchParams
   const pageNum = parseInt(params.page || "1", 10)
   const pageSizeNum = parseInt(params.pageSize || "10", 10)
   const search = params.search || ""
-
-  const { consultations, total, page, pageSize } = await getConsultations(pageNum, pageSizeNum, search)
 
   return (
     <div className="container mx-auto px-10 space-y-6">
@@ -69,12 +100,11 @@ export default async function ConsultationPage({ searchParams }) {
         </p>
       </div>
 
-      <ConsultationManagementClient
-        consultations={consultations}
-        total={total}
-        page={page}
-        pageSize={pageSize}
-      />
+      <ConsultationToolbar />
+
+      <Suspense fallback={<TableSkeleton />}>
+        <ConsultationTable page={pageNum} pageSize={pageSizeNum} search={search} />
+      </Suspense>
     </div>
   )
 }

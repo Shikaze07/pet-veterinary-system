@@ -1,12 +1,24 @@
+import { Suspense } from "react"
 import { UserManagementClient } from "./user-management-client"
+import { UserManagementToolbar } from "./user-management-toolbar"
 import prisma from "@/lib/prisma"
 
-async function getUsersData(page, pageSize) {
+async function getUsersData(page, pageSize, search) {
     const skip = (page - 1) * pageSize;
 
     try {
+        const where = search ? {
+            OR: [
+                { firstName: { contains: search } },
+                { lastName: { contains: search } },
+                { email: { contains: search } },
+                { phone: { contains: search } },
+            ]
+        } : {};
+
         const [users, total] = await Promise.all([
             prisma.user.findMany({
+                where,
                 skip,
                 take: pageSize,
                 orderBy: { createdAt: "desc" },
@@ -21,7 +33,7 @@ async function getUsersData(page, pageSize) {
                     createdAt: true,
                 },
             }),
-            prisma.user.count(),
+            prisma.user.count({ where }),
         ]);
 
         return {
@@ -36,28 +48,53 @@ async function getUsersData(page, pageSize) {
     }
 }
 
+async function UserManagementTable({ page, pageSize, search }) {
+    const { users, total } = await getUsersData(page, pageSize, search)
+    return (
+        <UserManagementClient
+            users={users}
+            total={total}
+            page={page}
+            pageSize={pageSize}
+        />
+    )
+}
+
+function TableSkeleton() {
+    return (
+        <div className="rounded-xl border border-slate-200 overflow-hidden">
+            <div className="flex gap-4 px-4 py-3 bg-slate-50 border-b border-slate-200">
+                {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-4 w-1/4 rounded bg-slate-200 animate-pulse" />)}
+            </div>
+            {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="flex gap-4 px-4 py-3 border-b border-slate-100 last:border-0">
+                    {Array.from({ length: 4 }).map((_, j) => <div key={j} className="h-4 w-1/4 rounded bg-slate-100 animate-pulse" />)}
+                </div>
+            ))}
+        </div>
+    )
+}
+
 export default async function UserManagementPage({ searchParams }) {
     const params = await searchParams
-    const pageNum = parseInt(Array.isArray(params.page) ? params.page[0] : params.page || "1", 10)
-    const pageSizeNum = parseInt(Array.isArray(params.pageSize) ? params.pageSize[0] : params.pageSize || "10", 10)
-
-    const { users, total, page, pageSize } = await getUsersData(pageNum, pageSizeNum)
+    const pageNum = parseInt(params.page || "1", 10)
+    const pageSizeNum = parseInt(params.pageSize || "10", 10)
+    const search = params.search || ""
 
     return (
         <div className="container mx-auto px-10 space-y-6">
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">User Management</h1>
-                <p className="text-slate-500">
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900 font-outfit">User Management</h1>
+                <p className="text-slate-500 font-inter">
                     Manage system users and their roles from here.
                 </p>
             </div>
 
-            <UserManagementClient
-                users={users}
-                total={total}
-                page={page}
-                pageSize={pageSize}
-            />
+            <UserManagementToolbar />
+
+            <Suspense key={`${search}-${pageNum}`} fallback={<TableSkeleton />}>
+                <UserManagementTable page={pageNum} pageSize={pageSizeNum} search={search} />
+            </Suspense>
         </div>
     )
 }

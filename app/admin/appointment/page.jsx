@@ -1,4 +1,6 @@
+import { Suspense } from "react"
 import { AppointmentManagementClient } from "./appointment-client"
+import { AppointmentToolbar } from "./appointment-toolbar"
 import prisma from "@/lib/prisma"
 
 async function getAppointments(page, pageSize, search, filter) {
@@ -65,14 +67,39 @@ async function getAppointments(page, pageSize, search, filter) {
   }
 }
 
+async function AppointmentTable({ page, pageSize, search, filter }) {
+  const { appointments, total } = await getAppointments(page, pageSize, search, filter)
+  return (
+    <AppointmentManagementClient
+      appointments={appointments}
+      total={total}
+      page={page}
+      pageSize={pageSize}
+    />
+  )
+}
+
+function TableSkeleton() {
+  return (
+    <div className="rounded-xl border border-slate-200 overflow-hidden">
+      <div className="flex gap-4 px-4 py-3 bg-slate-50 border-b border-slate-200">
+        {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-4 w-1/4 rounded bg-slate-200 animate-pulse" />)}
+      </div>
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div key={i} className="flex gap-4 px-4 py-3 border-b border-slate-100 last:border-0">
+          {Array.from({ length: 4 }).map((_, j) => <div key={j} className="h-4 w-1/4 rounded bg-slate-100 animate-pulse" />)}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default async function AppointmentPage({ searchParams }) {
   const params = await searchParams
   const pageNum = parseInt(params.page || "1", 10)
   const pageSizeNum = parseInt(params.pageSize || "10", 10)
   const search = params.search || ""
   const filter = params.filter || ""
-
-  const { appointments, total, page, pageSize } = await getAppointments(pageNum, pageSizeNum, search, filter)
 
   return (
     <div className="container mx-auto px-10 space-y-6">
@@ -83,12 +110,11 @@ export default async function AppointmentPage({ searchParams }) {
         </p>
       </div>
 
-      <AppointmentManagementClient
-        appointments={appointments}
-        total={total}
-        page={page}
-        pageSize={pageSize}
-      />
+      <AppointmentToolbar />
+
+      <Suspense key={`${search}-${filter}-${pageNum}`} fallback={<TableSkeleton />}>
+        <AppointmentTable page={pageNum} pageSize={pageSizeNum} search={search} filter={filter} />
+      </Suspense>
     </div>
   )
 }

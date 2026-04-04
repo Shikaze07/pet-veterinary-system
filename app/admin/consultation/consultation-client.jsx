@@ -3,12 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
-import { AddConsultationModal } from "./components/add-consultation-modal"
-import { Search } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { useState, useCallback } from "react"
-import { useDebounce } from "use-debounce"
-import { useEffect } from "react"
+import { useCallback } from "react"
 
 export function ConsultationManagementClient({
   consultations,
@@ -18,8 +13,6 @@ export function ConsultationManagementClient({
 }) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [searchValue, setSearchValue] = useState(searchParams.get("search") || "")
-  const [debouncedSearch] = useDebounce(searchValue, 500)
 
   const pageCount = Math.ceil(total / pageSize)
 
@@ -28,22 +21,12 @@ export function ConsultationManagementClient({
       const params = new URLSearchParams(searchParams.toString())
       params.set(name, value)
       if (name !== 'page') {
-        params.set('page', '1') // Reset to first page on search or size change
+        params.set('page', '1') // Reset to first page on size change
       }
       return params.toString()
     },
     [searchParams]
   )
-
-  useEffect(() => {
-    const currentSearch = searchParams.get("search") || ""
-    if (debouncedSearch !== currentSearch) {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set("search", debouncedSearch)
-      params.set("page", "1")
-      router.push(`/admin/consultation?${params.toString()}`)
-    }
-  }, [debouncedSearch, router, searchParams])
 
   const handlePageChange = (newPage) => {
     router.push(`/admin/consultation?${createQueryString("page", newPage.toString())}`)
@@ -55,24 +38,11 @@ export function ConsultationManagementClient({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-xl border shadow-sm">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            placeholder="Search symptoms, diagnosis, or pet..."
-            className="pl-10"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-          />
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="text-sm text-slate-500 font-medium">
+      <div className="flex justify-end pr-2">
+         <div className="text-sm text-slate-500 font-medium">
             Total {total} consultations
           </div>
-          <AddConsultationModal />
-        </div>
       </div>
-
       <DataTable
         columns={columns}
         data={consultations}

@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
-import { AddUserModal } from "./components/add-user-modal"
+import { useCallback } from "react"
 
 export function UserManagementClient({
     users,
@@ -16,26 +16,32 @@ export function UserManagementClient({
 
     const pageCount = Math.ceil(total / pageSize)
 
+    const createQueryString = useCallback(
+        (name, value) => {
+            const params = new URLSearchParams(searchParams.toString())
+            params.set(name, value)
+            if (name !== 'page') {
+                params.set('page', '1')
+            }
+            return params.toString()
+        },
+        [searchParams]
+    )
+
     const handlePageChange = (newPage) => {
-        const params = new URLSearchParams(searchParams.toString())
-        params.set("page", newPage.toString())
-        router.push(`/admin/user-management?${params.toString()}`)
+        router.push(`/admin/user-management?${createQueryString("page", newPage.toString())}`)
     }
 
     const handlePageSizeChange = (newPageSize) => {
-        const params = new URLSearchParams(searchParams.toString())
-        params.set("pageSize", newPageSize.toString())
-        params.set("page", "1") // Reset to first page when page size changes
-        router.push(`/admin/user-management?${params.toString()}`)
+        router.push(`/admin/user-management?${createQueryString("pageSize", newPageSize.toString())}`)
     }
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex justify-end pr-2">
                 <div className="text-sm text-slate-500 font-medium">
                     Total {total} users discovered
                 </div>
-                <AddUserModal />
             </div>
 
             <DataTable
