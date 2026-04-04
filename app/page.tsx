@@ -256,7 +256,7 @@ export default function Home() {
                 <p className="ff-b reveal r3" style={{ fontSize: '0.95rem', color: 'var(--mid)', lineHeight: 1.75, maxWidth: 420, fontWeight: 300, marginBottom: '2.25rem' }}>
                   Manage consultations, access medical records, track vaccinations, and receive health updates — all from the PetCare app.
                 </p>
-                <div className="reveal r4" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem', justifyContent: 'center' }}>
+                <div className="reveal r4" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem', justifyContent: 'left' }}>
                   <a href="#download" className="store-badge">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.22.99.14l12.12-6.99-2.54-2.54-10.57 9.39zm-1.7-20.3C1.18 3.77 1 4.15 1 4.68v14.64c0 .53.19.92.49 1.16l.06.05 8.2-8.2v-.19L1.48 3.46zm17.15 8.09-2.75-1.59-2.83 2.83 2.83 2.83 2.77-1.6c.79-.46.79-1.21-.02-1.47zM4.17.24l12.12 6.99-2.54 2.54L3.18.38c.3-.18.66-.23.99-.14z" /></svg>
                     <div style={{ textAlign: 'left' }}>
@@ -364,7 +364,7 @@ export default function Home() {
                   ))}
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginBottom: '1.25rem', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginBottom: '1.25rem', justifyContent: 'left' }}>
                   <a href="#" className="store-badge">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.22.99.14l12.12-6.99-2.54-2.54-10.57 9.39zm-1.7-20.3C1.18 3.77 1 4.15 1 4.68v14.64c0 .53.19.92.49 1.16l.06.05 8.2-8.2v-.19L1.48 3.46zm17.15 8.09-2.75-1.59-2.83 2.83 2.83 2.83 2.77-1.6c.79-.46.79-1.21-.02-1.47zM4.17.24l12.12 6.99-2.54 2.54L3.18.38c.3-.18.66-.23.99-.14z" /></svg>
                     <div style={{ textAlign: 'left' }}>
