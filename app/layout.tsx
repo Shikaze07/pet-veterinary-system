@@ -14,7 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PetCare Veterinary Clinic & Hospital | Expert Pet Care",
+  title: "PetCare Veterinary Clinic",
   description: "Comprehensive pet healthcare and monitoring for your beloved companions. Located in the heart of South Cotabato.",
 };
 
