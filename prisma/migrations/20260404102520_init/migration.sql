@@ -8,7 +8,7 @@ CREATE TABLE `User` (
     `password` VARCHAR(191) NOT NULL,
     `phone` VARCHAR(191) NULL,
     `address` VARCHAR(191) NULL,
-    `role` ENUM('ADMIN', 'OWNER') NOT NULL DEFAULT 'OWNER',
+    `role` ENUM('ADMIN', 'VET', 'OWNER') NOT NULL DEFAULT 'OWNER',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `User_email_key`(`email`),
@@ -60,6 +60,7 @@ CREATE TABLE `Medication` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `brand` VARCHAR(191) NULL,
+    `category` VARCHAR(191) NULL,
     `stock` INTEGER NOT NULL,
     `minStock` INTEGER NOT NULL,
     `price` DOUBLE NOT NULL,
