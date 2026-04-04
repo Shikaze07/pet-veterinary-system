@@ -5,7 +5,7 @@ import { PrismaClient } from "../generated/prisma/client";
 const adapter = new PrismaMariaDb({
   host: process.env.DATABASE_HOST,
   user: process.env.DATABASE_USER,
-  port: Number(process.env.DATABASE_PORT),
+  port: parseInt(process.env.DATABASE_PORT ?? "3306", 10),
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   connectionLimit: 5,
