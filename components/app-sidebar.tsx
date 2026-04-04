@@ -15,7 +15,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, CommandIcon } from "lucide-react"
+import { BriefcaseMedical, PawPrint, LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, CommandIcon, Syringe, Calendar, Pill, Stethoscope, LogOutIcon } from "lucide-react"
+import { Button } from "./ui/button"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 const data = {
   user: {
@@ -48,32 +51,32 @@ const data = {
     {
       title: "Pet",
       url: "/admin/pet",
-      icon: <FolderIcon />,
+      icon: <PawPrint />,
     },
     {
       title: "Consultation",
       url: "/admin/consultation",
-      icon: <FolderIcon />,
+      icon: <BriefcaseMedical />,
     },
     {
       title: "Vaccination",
       url: "/admin/vaccination",
-      icon: <FolderIcon />,
+      icon: <Syringe />,
     },
     {
       title: "Appointments",
       url: "/admin/appointment",
-      icon: <FolderIcon />,
+      icon: <Calendar />,
     },
     {
       title: "Medication",
       url: "/admin/medication",
-      icon: <FolderIcon />,
+      icon: <Pill />,
     },
     {
       title: "Medical Records",
       url: "/admin/medical-records",
-      icon: <UsersIcon />,
+      icon: <Stethoscope />,
     },
   ],
   navClouds: [
@@ -188,6 +191,26 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const router = useRouter()
+
+  async function handleLogout() {
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      })
+
+      if (response.ok) {
+        toast.success("Successfully logged out")
+        router.push("/")
+        router.refresh()
+      } else {
+        toast.error("Logout failed")
+      }
+    } catch (error) {
+      toast.error("An error occurred during logout")
+    }
+  }
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -208,8 +231,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
+      <SidebarFooter className="p-4">
+        <Button
+          onClick={handleLogout}
+        >
+          <LogOutIcon className="size-4" />
+          Logout
+        </Button>
       </SidebarFooter>
     </Sidebar>
   )

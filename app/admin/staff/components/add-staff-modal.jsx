@@ -236,7 +236,7 @@ export function AddStaffModal() {
             <FieldLabel htmlFor="role">Staff Role *</FieldLabel>
             <Select
               onValueChange={(value) => setValue("role", value)}
-              defaultValue="VET"
+              defaultValue="ADMIN"
               disabled={isSubmitting}
             >
               <SelectTrigger id="role">
@@ -269,7 +269,7 @@ export function AddStaffModal() {
                   Creating...
                 </>
               ) : (
-                "Create Staff"
+                "Save"
               )}
             </Button>
           </DialogFooter>

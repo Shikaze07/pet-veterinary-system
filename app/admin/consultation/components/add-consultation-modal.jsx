@@ -224,7 +224,7 @@ export function AddConsultationModal() {
                   Saving...
                 </>
               ) : (
-                "Save Record"
+                "Save "
               )}
             </Button>
           </DialogFooter>

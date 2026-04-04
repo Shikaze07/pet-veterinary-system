@@ -258,7 +258,7 @@ export function AddPetModal() {
                   Registering...
                 </>
               ) : (
-                "Register Pet"
+                "Save"
               )}
             </Button>
           </DialogFooter>

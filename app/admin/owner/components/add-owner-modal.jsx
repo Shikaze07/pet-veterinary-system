@@ -241,7 +241,7 @@ export function AddOwnerModal() {
                   Creating...
                 </>
               ) : (
-                "Create Owner"
+                "Save"
               )}
             </Button>
           </DialogFooter>

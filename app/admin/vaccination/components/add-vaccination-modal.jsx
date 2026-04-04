@@ -206,7 +206,7 @@ export function AddVaccinationModal() {
                   Saving...
                 </>
               ) : (
-                "Save Record"
+                "Save"
               )}
             </Button>
           </DialogFooter>

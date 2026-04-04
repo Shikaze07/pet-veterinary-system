@@ -192,7 +192,7 @@ export function AddMedicationModal() {
                   Adding...
                 </>
               ) : (
-                "Add to Inventory"
+                "Save"
               )}
             </Button>
           </DialogFooter>
