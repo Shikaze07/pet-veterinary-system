@@ -256,21 +256,7 @@ export default function Home() {
                 <p className="ff-b reveal r3" style={{ fontSize: '0.95rem', color: 'var(--mid)', lineHeight: 1.75, maxWidth: 420, fontWeight: 300, marginBottom: '2.25rem' }}>
                   Manage consultations, access medical records, track vaccinations, and receive health updates — all from the PetCare app.
                 </p>
-                <div className="reveal r4" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem', justifyContent: 'left' }}>
-                  <a href="#download" className="store-badge">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.22.99.14l12.12-6.99-2.54-2.54-10.57 9.39zm-1.7-20.3C1.18 3.77 1 4.15 1 4.68v14.64c0 .53.19.92.49 1.16l.06.05 8.2-8.2v-.19L1.48 3.46zm17.15 8.09-2.75-1.59-2.83 2.83 2.83 2.83 2.77-1.6c.79-.46.79-1.21-.02-1.47zM4.17.24l12.12 6.99-2.54 2.54L3.18.38c.3-.18.66-.23.99-.14z" /></svg>
-                    <div style={{ textAlign: 'left' }}>
-                      <div style={{ fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', lineHeight: 1 }}>Get it on</div>
-                      <div style={{ fontSize: '0.88rem', fontWeight: 500, lineHeight: 1.3 }}>Google Play</div>
-                    </div>
-                  </a>
-                </div>
-                <div className="ff-b reveal r4" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '3rem' }}>
-                  <div className="rating-stars">
-                    {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="#2A6B6B" color="#2A6B6B" />)}
-                  </div>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--mid)', fontWeight: 300 }}>4.8 Rating · 2,400+ Pet Owners</span>
-                </div>
+               
                 <div className="ff-b reveal r4 hero-stats" style={{ display: 'flex', paddingTop: '2.5rem', borderTop: '1px solid var(--border)', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
                   {[['24/7', 'Care'], ['10+', 'Vets'], ['Live', 'Updates']].map(([val, lbl], i) => (
                     <div key={i} className="stat" style={{ padding: '0 1rem' }}>
@@ -364,15 +350,7 @@ export default function Home() {
                   ))}
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginBottom: '1.25rem', justifyContent: 'left' }}>
-                  <a href="#" className="store-badge">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.22.99.14l12.12-6.99-2.54-2.54-10.57 9.39zm-1.7-20.3C1.18 3.77 1 4.15 1 4.68v14.64c0 .53.19.92.49 1.16l.06.05 8.2-8.2v-.19L1.48 3.46zm17.15 8.09-2.75-1.59-2.83 2.83 2.83 2.83 2.77-1.6c.79-.46.79-1.21-.02-1.47zM4.17.24l12.12 6.99-2.54 2.54L3.18.38c.3-.18.66-.23.99-.14z" /></svg>
-                    <div style={{ textAlign: 'left' }}>
-                      <div style={{ fontSize: '0.57rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', lineHeight: 1 }}>Get it on</div>
-                      <div style={{ fontSize: '0.9rem', fontWeight: 500, lineHeight: 1.4 }}>Google Play</div>
-                    </div>
-                  </a>
-                </div>
+                
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -482,21 +460,7 @@ export default function Home() {
                   Free on Android. Join thousands of pet owners who manage their pet's health with PetCare Clinic.
                 </p>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', alignItems: 'center' }}>
-                <a href="#" className="store-badge" style={{ background: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.15)', minWidth: 220 }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.22.99.14l12.12-6.99-2.54-2.54-10.57 9.39zm-1.7-20.3C1.18 3.77 1 4.15 1 4.68v14.64c0 .53.19.92.49 1.16l.06.05 8.2-8.2v-.19L1.48 3.46zm17.15 8.09-2.75-1.59-2.83 2.83 2.83 2.83 2.77-1.6c.79-.46.79-1.21-.02-1.47zM4.17.24l12.12 6.99-2.54 2.54L3.18.38c.3-.18.66-.23.99-.14z" /></svg>
-                  <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', lineHeight: 1 }}>Get it on</div>
-                    <div style={{ fontSize: '1rem', fontWeight: 500, lineHeight: 1.4 }}>Google Play</div>
-                  </div>
-                </a>
-                <div className="ff-b" style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', paddingTop: '0.4rem' }}>
-                  <div className="rating-stars">
-                    {[...Array(5)].map((_, i) => <Star key={i} size={11} fill="rgba(255,255,255,0.7)" color="rgba(255,255,255,0.7)" />)}
-                  </div>
-                  <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', fontWeight: 300 }}>4.8 Rating · 2,400+ Users</span>
-                </div>
-              </div>
+              
             </div>
           </section>
 
