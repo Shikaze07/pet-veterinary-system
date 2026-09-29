@@ -21,7 +21,9 @@ import {
   Download,
   CheckCircle2,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const services = [
   { title: "Digital Medical Records", desc: "Complete health history always accessible. View consultations, treatments, and allergy profiles instantly.", icon: ClipboardList },
@@ -35,9 +37,22 @@ const services = [
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    AOS.init({
+      duration: 750,
+      easing: "ease-out-cubic",
+      once: true,
+      offset: 50,
+    });
+  }, []);
+
   return (
     <>
       <style>{`
+        html {
+          scroll-behavior: smooth;
+        }
+
         :root {
           --cream: #F7F5F0;
           --warm-white: #FDFCFA;
@@ -295,7 +310,7 @@ export default function Home() {
           <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '1rem 0' }} />
           <Link href="/login" className="btn-o" style={{ justifyContent: 'center' }} onClick={() => setMobileMenuOpen(false)}>Admin Login</Link>
           <a href="#download" className="btn-p" style={{ justifyContent: 'center' }} onClick={() => setMobileMenuOpen(false)}>
-            <Smartphone size={16} /> Download App
+            <Smartphone size={16} /> Mobile App
           </a>
         </div>
 
@@ -323,7 +338,7 @@ export default function Home() {
             <div className="hidden-mobile" style={{ gap: '0.6rem', alignItems: 'center' }}>
               <Link href="/login" className="btn-o" style={{ padding: '0.48rem 1.1rem', fontSize: '0.73rem' }}>Admin Login</Link>
               <a href="#download" className="btn-p" style={{ padding: '0.48rem 1.1rem', fontSize: '0.73rem' }}>
-                <Smartphone size={13} /> Download App
+                <Smartphone size={13} /> Mobile App
               </a>
             </div>
 
@@ -343,26 +358,26 @@ export default function Home() {
           <section style={{ borderBottom: '1px solid var(--border)', padding: '4rem 0 5rem' }}>
             <div className="container responsive-grid">
               <div className="hero-content">
-                <div className="tag reveal r1" style={{ marginBottom: '1.75rem' }}>Now Available on Android</div>
-                <h1 className="ff-d reveal r2 hero-title" style={{ fontSize: 'clamp(2.4rem, 5vw, 3.8rem)', fontWeight: 400, lineHeight: 1.1, color: 'var(--charcoal)', marginBottom: '1.4rem' }}>
+                <div className="tag" data-aos="fade-down" style={{ marginBottom: '1.75rem' }}>Now Available on Android</div>
+                <h1 className="ff-d hero-title" data-aos="fade-up" data-aos-delay="100" style={{ fontSize: 'clamp(2.4rem, 5vw, 3.8rem)', fontWeight: 400, lineHeight: 1.1, color: 'var(--charcoal)', marginBottom: '1.4rem' }}>
                   Your pet's health,<br />
                   always in your<br />
                   <em style={{ color: 'var(--teal)' }}>pocket.</em>
                 </h1>
-                <p className="ff-b reveal r3" style={{ fontSize: '0.95rem', color: 'var(--mid)', lineHeight: 1.75, maxWidth: 420, fontWeight: 300, marginBottom: '1.8rem' }}>
+                <p className="ff-b" data-aos="fade-up" data-aos-delay="200" style={{ fontSize: '0.95rem', color: 'var(--mid)', lineHeight: 1.75, maxWidth: 420, fontWeight: 300, marginBottom: '1.8rem' }}>
                   Manage consultations, access medical records, track vaccinations, and receive health updates — all from the PetCare app.
                 </p>
 
-                <div className="reveal r3" style={{ display: 'flex', gap: '0.75rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
-                  <a href="#download" className="btn-p">
-                    <Smartphone size={14} /> View Mobile App
-                  </a>
-                  <a href="#services" className="btn-o">
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2.5rem', flexWrap: 'wrap' }} data-aos="fade-up" data-aos-delay="300">
+                  <a href="#services" className="btn-p">
                     Explore Services
+                  </a>
+                  <a href="#contact" className="btn-o">
+                    Visit Clinic
                   </a>
                 </div>
                
-                <div className="ff-b reveal r4 hero-stats" style={{ display: 'flex', paddingTop: '2.5rem', borderTop: '1px solid var(--border)', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
+                <div className="ff-b hero-stats" data-aos="fade-up" data-aos-delay="400" style={{ display: 'flex', paddingTop: '2.5rem', borderTop: '1px solid var(--border)', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
                   {[['24/7', 'Care'], ['10+', 'Vets'], ['Live', 'Updates']].map(([val, lbl], i) => (
                     <div key={i} className="stat" style={{ padding: '0 1rem' }}>
                       <div style={{ fontSize: '1.5rem', fontWeight: 400, color: 'var(--charcoal)', lineHeight: 1 }}>{val}</div>
@@ -372,7 +387,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: 'relative' }} data-aos="fade-left" data-aos-delay="200">
                 <div style={{ overflow: 'hidden', border: '1px solid var(--border)' }}>
                   <Image
                     src="/landing-hero.png"
@@ -401,7 +416,7 @@ export default function Home() {
           {/* ─── SERVICES ─── */}
           <section id="services" style={{ padding: '5rem 0', background: 'var(--cream)' }}>
             <div className="container">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3.5rem', paddingBottom: '2.5rem', borderBottom: '1px solid var(--border)', flexWrap: 'wrap', gap: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3.5rem', paddingBottom: '2.5rem', borderBottom: '1px solid var(--border)', flexWrap: 'wrap', gap: '2rem' }} data-aos="fade-up">
                 <div>
                   <div className="tag ff-b" style={{ marginBottom: '1.2rem' }}>What We Offer</div>
                   <h2 className="ff-d" style={{ fontSize: 'clamp(1.8rem, 3.2vw, 2.6rem)', fontWeight: 400, color: 'var(--charcoal)', lineHeight: 1.15 }}>
@@ -415,7 +430,7 @@ export default function Home() {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0 2.5rem' }}>
                 {services.map((s, i) => (
-                  <div key={i} className="svc-row ff-b">
+                  <div key={i} className="svc-row ff-b" data-aos="fade-up" data-aos-delay={i * 70}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
                       <s.icon size={18} className="svc-icon" style={{ color: 'var(--mid)', transition: 'color 0.22s' }} />
                       <span style={{ fontSize: '0.64rem', color: 'var(--light)', letterSpacing: '0.12em' }}>{String(i + 1).padStart(2, '0')}</span>
@@ -431,7 +446,7 @@ export default function Home() {
           {/* ─── DOWNLOAD APP ─── */}
           <section id="download" style={{ padding: '6rem 0', background: 'var(--warm-white)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
             <div className="container responsive-grid">
-              <div className="hero-content">
+              <div className="hero-content" data-aos="fade-right" data-aos-duration="750">
                 <div className="tag ff-b" style={{ marginBottom: '1.5rem' }}>Mobile App</div>
                 <h2 className="ff-d" style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)', fontWeight: 400, color: 'var(--charcoal)', lineHeight: 1.15, marginBottom: '1.2rem' }}>
                   Everything your<br />pet needs,<br /><em style={{ color: 'var(--teal)' }}>one tap away.</em>
@@ -484,7 +499,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="phone-stage">
+              <div className="phone-stage" data-aos="fade-left" data-aos-duration="750">
                 <div className="phone-glow" />
 
                 {/* Floating badge 1: Live Cloud Sync */}
@@ -537,7 +552,7 @@ export default function Home() {
           {/* ─── CONTACT ─── */}
           <section id="contact" style={{ padding: '6rem 0', background: 'var(--charcoal)' }}>
             <div className="container responsive-grid">
-              <div>
+              <div data-aos="fade-right">
                 <div className="tag ff-b" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.45)', marginBottom: '1.5rem' }}>Visit Us</div>
                 <h2 className="ff-d" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 400, color: '#fff', lineHeight: 1.2, marginBottom: '1.1rem' }}>
                   Find us in<br />Koronadal City.
@@ -570,7 +585,7 @@ export default function Home() {
                 </a>
               </div>
 
-              <div style={{ width: '100%', height: 450, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ width: '100%', height: 450, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }} data-aos="fade-left">
                 <iframe
                   width="100%" height="100%"
                   style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(0.9) brightness(0.9)' }}
@@ -582,34 +597,45 @@ export default function Home() {
           </section>
 
           {/* ─── CTA ─── */}
-          <section style={{ padding: '7rem 0', background: 'var(--teal)' }}>
-            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '3.5rem' }}>
+          <section style={{ padding: '6rem 0', background: 'var(--teal)' }}>
+            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '3rem' }} data-aos="fade-up">
               <div style={{ maxWidth: 540 }}>
-                <div className="tag ff-b" style={{ borderColor: 'rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.5)', marginBottom: '1.5rem' }}>Download Now</div>
-                <h2 className="ff-d" style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 400, color: '#fff', lineHeight: 1.15, marginBottom: '1.2rem' }}>
+                <div className="tag ff-b" style={{ borderColor: 'rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.65)', marginBottom: '1.2rem' }}>Get In Touch</div>
+                <h2 className="ff-d" style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 400, color: '#fff', lineHeight: 1.15, marginBottom: '1rem' }}>
                   Ready to provide the<br />best care for your pet?
                 </h2>
-                <p className="ff-b" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.8, maxWidth: 440 }}>
-                  Free on Android. Join thousands of pet owners who manage their pet's health with PetCare Clinic.
+                <p className="ff-b" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, maxWidth: 460 }}>
+                  Visit our clinic in Koronadal City or get in touch with our veterinary care team today.
                 </p>
               </div>
-              <div>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <a
-                  href="/PetCareClinic.apk"
-                  download="PetCareClinic.apk"
+                  href="#contact"
                   className="btn-p"
                   style={{
                     background: '#fff',
                     color: 'var(--teal)',
-                    padding: '0.9rem 1.8rem',
+                    padding: '0.85rem 1.8rem',
                     fontSize: '0.82rem',
                     fontWeight: 600,
-                    letterSpacing: '0.05em',
-                    boxShadow: '0 12px 28px rgba(0,0,0,0.2)',
+                    boxShadow: '0 12px 28px rgba(0,0,0,0.18)',
                     transition: 'all 0.2s',
                   }}
                 >
-                  <Download size={16} /> Download Android App (.apk)
+                  <MapPin size={15} /> Visit Our Clinic
+                </a>
+                <a
+                  href="tel:+630832281234"
+                  className="btn-o"
+                  style={{
+                    color: '#fff',
+                    borderColor: 'rgba(255,255,255,0.35)',
+                    padding: '0.85rem 1.8rem',
+                    fontSize: '0.82rem',
+                    fontWeight: 500,
+                  }}
+                >
+                  <Phone size={15} /> Call Clinic
                 </a>
               </div>
             </div>
