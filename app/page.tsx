@@ -473,7 +473,7 @@ export default function Home() {
                       <Download size={16} /> Download APK (v1.0)
                     </a>
                     <span style={{ fontSize: '0.78rem', color: 'var(--mid)', fontWeight: 400 }}>
-                      Android 8.0+ • ~16 MB • Free
+                      Android 7.0+ • ~6.3 MB • Free
                     </span>
                   </div>
 
