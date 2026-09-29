@@ -49,8 +49,16 @@ export default function Home() {
   return (
     <>
       <style>{`
-        html {
+        html, body {
           scroll-behavior: smooth;
+          overflow-x: hidden !important;
+          max-width: 100vw;
+          width: 100%;
+          position: relative;
+        }
+
+        *, *::before, *::after {
+          box-sizing: border-box;
         }
 
         :root {
@@ -173,11 +181,17 @@ export default function Home() {
         .mobile-menu {
           position: fixed; top: 0; right: 0; width: 80%; max-width: 320px; height: 100%;
           background: var(--warm-white); z-index: 101;
-          transform: translateX(100%); transition: transform 0.3s ease;
+          transform: translateX(100%); transition: transform 0.3s ease, visibility 0.3s ease;
           padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;
           box-shadow: -4px 0 16px rgba(0,0,0,0.1);
+          visibility: hidden;
+          pointer-events: none;
         }
-        .mobile-menu.open { transform: translateX(0); }
+        .mobile-menu.open {
+          transform: translateX(0);
+          visibility: visible;
+          pointer-events: auto;
+        }
 
         .hidden-mobile { display: none; }
         @media (min-width: 992px) {
@@ -207,6 +221,8 @@ export default function Home() {
           align-items: center;
           padding: 1.5rem 0.5rem;
           width: 100%;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .phone-glow {
@@ -274,19 +290,16 @@ export default function Home() {
           .phone-stage {
             margin-top: 1.5rem;
           }
-        }
-
-        @media (max-width: 640px) {
           .floating-badge {
             display: none !important;
           }
           .phone-mockup-img {
-            max-width: 260px;
+            max-width: 270px;
           }
         }
       `}</style>
 
-      <div style={{ background: 'var(--warm-white)', minHeight: '100vh' }}>
+      <div style={{ background: 'var(--warm-white)', minHeight: '100vh', overflowX: 'hidden', width: '100%', maxWidth: '100vw', position: 'relative' }}>
 
         {/* ─── MOBILE NAV OVERLAY ─── */}
         <div
@@ -428,7 +441,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0 2.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))', gap: '1.5rem 2.5rem' }}>
                 {services.map((s, i) => (
                   <div key={i} className="svc-row ff-b" data-aos="fade-up" data-aos-delay={i * 70}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
@@ -646,7 +659,7 @@ export default function Home() {
         {/* ─── FOOTER ─── */}
         <footer style={{ background: 'var(--dark)', padding: '5rem 0', color: 'rgba(255,255,255,0.35)' }}>
           <div className="container">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3.5rem', marginBottom: '3rem', paddingBottom: '3rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))', gap: '2.5rem', marginBottom: '3rem', paddingBottom: '3rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
               <div className="ff-b">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.2rem' }}>
                   <Stethoscope size={15} style={{ color: 'var(--teal-light)' }} />
