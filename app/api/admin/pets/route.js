@@ -6,19 +6,21 @@ export async function GET(request) {
     const page = parseInt(searchParams.get("page") || "1", 10)
     const pageSize = parseInt(searchParams.get("pageSize") || "10", 10)
     const search = searchParams.get("search") || ""
+    const ownerId = searchParams.get("ownerId") || ""
 
     const skip = (page - 1) * pageSize
 
     try {
-        const where = search 
-            ? {
+        const where = {
+            ...(search ? {
                 OR: [
-                    { name: { contains: search, mode: 'insensitive' } },
-                    { species: { contains: search, mode: 'insensitive' } },
-                    { breed: { contains: search, mode: 'insensitive' } },
+                    { name: { contains: search } },
+                    { species: { contains: search } },
+                    { breed: { contains: search } },
                 ]
-            }
-            : {}
+            } : {}),
+            ...(ownerId ? { ownerId } : {})
+        }
 
         const [pets, total] = await Promise.all([
             prisma.pet.findMany({

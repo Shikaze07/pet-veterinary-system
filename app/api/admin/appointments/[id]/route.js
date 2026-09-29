@@ -7,12 +7,41 @@ export async function PUT(request, { params }) {
     const body = await request.json();
     const { ownerId, petId, date, reason, notes, status } = body;
 
+    if (ownerId && date && status !== "CANCELLED") {
+      const appointmentDate = new Date(date);
+      const startOfDay = new Date(appointmentDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(appointmentDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const existingAppointment = await prisma.appointment.findFirst({
+        where: {
+          id: { not: id },
+          ownerId,
+          date: {
+            gte: startOfDay,
+            lte: endOfDay,
+          },
+          status: {
+            not: "CANCELLED",
+          },
+        },
+      });
+
+      if (existingAppointment) {
+        return NextResponse.json(
+          { error: "This user already has an appointment scheduled on this date." },
+          { status: 400 }
+        );
+      }
+    }
+
     const appointment = await prisma.appointment.update({
       where: { id },
       data: {
         ownerId,
         petId,
-        date: new Date(date),
+        date: date ? new Date(date) : undefined,
         reason,
         notes: notes || null,
         status: status || undefined,

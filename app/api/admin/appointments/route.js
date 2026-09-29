@@ -8,6 +8,7 @@ export async function GET(request) {
     const pageSize = parseInt(searchParams.get("pageSize") ?? "10", 10);
     const search = searchParams.get("search") ?? "";
     const filter = searchParams.get("filter") ?? ""; // e.g. "today"
+    const ownerId = searchParams.get("ownerId") ?? "";
     const skip = (page - 1) * pageSize;
 
     let where = search 
@@ -20,6 +21,10 @@ export async function GET(request) {
           ]
         }
       : {};
+
+    if (ownerId) {
+      where.ownerId = ownerId;
+    }
 
     if (filter === "today") {
       const today = new Date();
@@ -80,11 +85,37 @@ export async function POST(request) {
       );
     }
 
+    const appointmentDate = new Date(date);
+    const startOfDay = new Date(appointmentDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(appointmentDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const existingAppointment = await prisma.appointment.findFirst({
+      where: {
+        ownerId,
+        date: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+        status: {
+          not: "CANCELLED",
+        },
+      },
+    });
+
+    if (existingAppointment) {
+      return NextResponse.json(
+        { error: "This user already has an appointment scheduled on this date." },
+        { status: 400 }
+      );
+    }
+
     const appointment = await prisma.appointment.create({
       data: {
         ownerId,
         petId,
-        date: new Date(date),
+        date: appointmentDate,
         reason,
         notes: notes || null,
         status: "PENDING",

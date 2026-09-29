@@ -35,10 +35,11 @@ export function LoginForm({
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      const isJson = response.headers.get("content-type")?.includes("application/json");
+      const data = isJson ? await response.json() : null;
 
       if (!response.ok) {
-        throw new Error(data.error || "Login failed");
+        throw new Error((data && data.error) || `Request failed with status ${response.status}`);
       }
 
       toast.success("Successfully logged in!");

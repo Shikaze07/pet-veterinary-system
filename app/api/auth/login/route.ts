@@ -35,10 +35,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Only allow ADMIN role for now as requested
-    if (user.role !== "ADMIN") {
+    // Allow ADMIN and OWNER to log in
+    if (user.role !== "ADMIN" && user.role !== "OWNER") {
       return NextResponse.json(
-        { error: "Access denied. Admin only." },
+        { error: "Access denied. Valid account required." },
         { status: 403 }
       );
     }
@@ -57,6 +57,11 @@ export async function POST(request: NextRequest) {
         id: user.id,
         email: user.email,
         role: user.role,
+        firstName: user.firstName,
+        middleName: user.middleName,
+        lastName: user.lastName,
+        phone: user.phone,
+        address: user.address,
         name: `${user.firstName} ${user.lastName}`,
       },
     });

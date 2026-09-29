@@ -18,8 +18,18 @@ const adapter =
     user: process.env.DATABASE_USER!,
     password: process.env.DATABASE_PASSWORD!,
     database: process.env.DATABASE_NAME!,
-    connectionLimit: 10,
-    connectTimeout: 30000,
+    // Required for MySQL 8 caching_sha2_password auth plugin over non-TLS proxy
+    allowPublicKeyRetrieval: true,
+    // Keep pool small to avoid Railway's connection limits
+    connectionLimit: 3,
+    // Allow extra time for Railway's cold-start proxy
+    connectTimeout: 60000,
+    // Destroy idle connections before Railway's ~30s proxy timeout closes them
+    idleTimeout: 20000,
+    // Send keep-alive pings every 10s so the socket isn't silently closed
+    keepAliveDelay: 10000,
+    // Allow reasonable time to acquire a connection from the pool
+    acquireTimeout: 30000,
   });
 
 const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });

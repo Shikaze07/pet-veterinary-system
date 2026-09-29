@@ -18,6 +18,8 @@ import {
   Star,
   Menu,
   X,
+  Download,
+  CheckCircle2,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -26,7 +28,7 @@ const services = [
   { title: "Easy Scheduling", desc: "Book visits online with real-time confirmations and automated reminders sent directly to you.", icon: Calendar },
   { title: "Preventive Care", desc: "Vaccination and deworming tracking with proactive alerts to ensure no dose is ever missed.", icon: ShieldCheck },
   { title: "Pharmacy & Medication", desc: "In-house pharmacy with premium medications. Seamless prescription tracking and refill management.", icon: Pill },
-  { title: "Transparent Billing", desc: "Itemized invoices for every service. Clear pricing with multiple digital payment options.", icon: FileText },
+  { title: "Clinical Documentation", desc: "Detailed treatment logs, diagnostic summaries, and medical history always accessible.", icon: FileText },
   { title: "Health Monitoring", desc: "Real-time status updates and treatment progress tracking throughout your pet's care.", icon: Smartphone },
 ];
 
@@ -173,6 +175,100 @@ export default function Home() {
            .hero-title { font-size: 2.6rem !important; }
            .hero-stats { justify-content: center; }
         }
+
+        @keyframes phoneFloat {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
+        }
+
+        .phone-stage {
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 1.5rem 0.5rem;
+          width: 100%;
+        }
+
+        .phone-glow {
+          position: absolute;
+          width: 280px;
+          height: 480px;
+          background: radial-gradient(circle, rgba(42, 107, 107, 0.22) 0%, rgba(42, 107, 107, 0.05) 55%, transparent 75%);
+          filter: blur(45px);
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .phone-wrapper {
+          position: relative;
+          z-index: 1;
+          animation: phoneFloat 6s ease-in-out infinite;
+          transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .phone-wrapper:hover {
+          transform: translateY(-6px) scale(1.02);
+        }
+
+        .phone-mockup-img {
+          display: block;
+          width: 100%;
+          max-width: 300px;
+          height: auto;
+          filter: drop-shadow(0 24px 44px rgba(28, 28, 28, 0.22)) drop-shadow(0 8px 16px rgba(42, 107, 107, 0.12));
+        }
+
+        .floating-badge {
+          position: absolute;
+          background: rgba(255, 255, 255, 0.96);
+          backdrop-filter: blur(12px);
+          border: 1px solid var(--border);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+          border-radius: 14px;
+          padding: 0.65rem 0.95rem;
+          display: flex;
+          align-items: center;
+          gap: 0.7rem;
+          z-index: 2;
+          pointer-events: none;
+        }
+
+        .badge-top {
+          top: 12%;
+          right: -1rem;
+          animation: phoneFloat 6s ease-in-out infinite 1.5s;
+        }
+
+        .badge-bottom {
+          bottom: 12%;
+          left: -1rem;
+          animation: phoneFloat 6s ease-in-out infinite 3s;
+        }
+
+        @media (max-width: 1100px) {
+          .badge-top { right: -0.5rem; }
+          .badge-bottom { left: -0.5rem; }
+        }
+
+        @media (max-width: 992px) {
+          .phone-stage {
+            margin-top: 1.5rem;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .floating-badge {
+            display: none !important;
+          }
+          .phone-mockup-img {
+            max-width: 260px;
+          }
+        }
       `}</style>
 
       <div style={{ background: 'var(--warm-white)', minHeight: '100vh' }}>
@@ -253,9 +349,18 @@ export default function Home() {
                   always in your<br />
                   <em style={{ color: 'var(--teal)' }}>pocket.</em>
                 </h1>
-                <p className="ff-b reveal r3" style={{ fontSize: '0.95rem', color: 'var(--mid)', lineHeight: 1.75, maxWidth: 420, fontWeight: 300, marginBottom: '2.25rem' }}>
+                <p className="ff-b reveal r3" style={{ fontSize: '0.95rem', color: 'var(--mid)', lineHeight: 1.75, maxWidth: 420, fontWeight: 300, marginBottom: '1.8rem' }}>
                   Manage consultations, access medical records, track vaccinations, and receive health updates — all from the PetCare app.
                 </p>
+
+                <div className="reveal r3" style={{ display: 'flex', gap: '0.75rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
+                  <a href="#download" className="btn-p">
+                    <Smartphone size={14} /> View Mobile App
+                  </a>
+                  <a href="#services" className="btn-o">
+                    Explore Services
+                  </a>
+                </div>
                
                 <div className="ff-b reveal r4 hero-stats" style={{ display: 'flex', paddingTop: '2.5rem', borderTop: '1px solid var(--border)', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
                   {[['24/7', 'Care'], ['10+', 'Vets'], ['Live', 'Updates']].map(([val, lbl], i) => (
@@ -335,13 +440,13 @@ export default function Home() {
                   Book visits, view records, receive vaccination reminders, and stay updated on your pet's care — anytime, anywhere.
                 </p>
 
-                <div className="ff-b" style={{ width: '100%', maxWidth: 420, marginBottom: '2.5rem' }}>
+                <div className="ff-b" style={{ width: '100%', maxWidth: 440, marginBottom: '2rem' }}>
                   {[
-                    'Book & manage appointments',
-                    'View complete medical history',
-                    'Vaccination & deworming reminders',
-                    'Real-time care status updates',
-                    'Digital invoices & payment',
+                    'Book & manage clinic visits with instant status tracking',
+                    'Access complete medical history and treatment logs',
+                    'Automated vaccination & deworming push reminders',
+                    'Direct contact with clinic emergency hotlines and hours',
+                    'Offline access with seamless cloud synchronization',
                   ].map((feat, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.7rem 0', borderBottom: '1px solid var(--border)' }}>
                       <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--teal)', flexShrink: 0 }} />
@@ -350,51 +455,79 @@ export default function Home() {
                   ))}
                 </div>
 
-                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', width: '100%', maxWidth: 440 }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+                    <a
+                      href="/PetCareClinic.apk"
+                      download="PetCareClinic.apk"
+                      className="btn-p"
+                      style={{
+                        padding: '0.85rem 1.8rem',
+                        fontSize: '0.82rem',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.65rem',
+                        boxShadow: '0 8px 22px rgba(42, 107, 107, 0.25)',
+                      }}
+                    >
+                      <Download size={16} /> Download APK (v1.0)
+                    </a>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--mid)', fontWeight: 400 }}>
+                      Android 8.0+ • ~16 MB • Free
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--teal)', fontSize: '0.76rem', fontWeight: 500, marginTop: '0.2rem' }}>
+                    <CheckCircle2 size={15} />
+                    <span>Connected with live clinic database & instant sync</span>
+                  </div>
+                </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <div style={{
-                  width: '100%', maxWidth: 280, background: 'var(--charcoal)',
-                  borderRadius: 36, padding: '14px',
-                  boxShadow: '0 32px 64px rgba(0,0,0,0.2)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                }}>
-                  <div style={{ background: 'var(--cream)', borderRadius: 24, overflow: 'hidden', minHeight: 500 }}>
-                    <div style={{ background: 'var(--teal)', padding: '1.25rem 1.5rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                      <div>
-                        <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.6)', fontFamily: 'DM Sans', marginBottom: 2 }}>Good morning</div>
-                        <div style={{ fontSize: '0.9rem', color: '#fff', fontFamily: 'Playfair Display, serif' }}>Maria Santos</div>
-                      </div>
-                      <Stethoscope size={18} style={{ color: 'rgba(255,255,255,0.5)' }} />
-                    </div>
-                    <div style={{ margin: '1rem', background: '#fff', borderRadius: 12, padding: '1rem', border: '1px solid var(--border)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--charcoal)', fontFamily: 'DM Sans' }}>Mochi</div>
-                        <div style={{ fontSize: '0.6rem', background: 'var(--teal-pale)', color: 'var(--teal)', padding: '0.15rem 0.5rem', borderRadius: 100 }}>Healthy</div>
-                      </div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--mid)', fontFamily: 'DM Sans' }}>Golden Retriever · 3 yrs</div>
-                    </div>
-                    <div style={{ margin: '0 1rem 1rem' }}>
-                      <div style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--light)', fontFamily: 'DM Sans', marginBottom: '0.6rem' }}>Next Appointment</div>
-                      <div style={{ background: '#fff', borderRadius: 12, padding: '1rem', border: '1px solid var(--border)', display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-                        <div style={{ background: 'var(--teal)', width: 40, height: 40, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <Calendar size={18} style={{ color: '#fff' }} />
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--charcoal)' }}>Annual Check-up</div>
-                          <div style={{ fontSize: '0.65rem', color: 'var(--mid)' }}>Apr 10 · 9:00 AM</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{ margin: '0 1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-                      {[{ icon: ClipboardList, label: 'Records' }, { icon: Pill, label: 'Pharmacy' }, { icon: ShieldCheck, label: 'Vaccines' }, { icon: FileText, label: 'Billing' }].map(({ icon: Icon, label }) => (
-                        <div key={label} style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 12, padding: '0.8rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
-                          <Icon size={15} style={{ color: 'var(--teal)' }} />
-                          <div style={{ fontSize: '0.64rem', color: 'var(--mid)', fontFamily: 'DM Sans' }}>{label}</div>
-                        </div>
-                      ))}
-                    </div>
+              <div className="phone-stage">
+                <div className="phone-glow" />
+
+                {/* Floating badge 1: Live Cloud Sync */}
+                <div className="floating-badge badge-top ff-b">
+                  <div style={{
+                    width: 34, height: 34, borderRadius: '50%',
+                    background: 'var(--teal-pale)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'var(--teal)', flexShrink: 0,
+                  }}>
+                    <CheckCircle2 size={17} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--charcoal)' }}>Live Database Sync</div>
+                    <div style={{ fontSize: '0.66rem', color: 'var(--mid)' }}>Cloud & Mobile Connected</div>
+                  </div>
+                </div>
+
+                {/* Main Phone Image */}
+                <div className="phone-wrapper">
+                  <Image
+                    src="/app.png"
+                    alt="PetCare Android Mobile App Interface"
+                    width={350}
+                    height={748}
+                    className="phone-mockup-img"
+                    priority
+                  />
+                </div>
+
+                {/* Floating badge 2: Pet Owner Dashboard */}
+                <div className="floating-badge badge-bottom ff-b">
+                  <div style={{
+                    width: 34, height: 34, borderRadius: '50%',
+                    background: '#FEF3C7',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#D97706', flexShrink: 0,
+                  }}>
+                    <Star size={16} fill="#D97706" />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--charcoal)' }}>Pet Owner Dashboard</div>
+                    <div style={{ fontSize: '0.66rem', color: 'var(--mid)' }}>Instant Booking & Records</div>
                   </div>
                 </div>
               </div>
@@ -460,7 +593,25 @@ export default function Home() {
                   Free on Android. Join thousands of pet owners who manage their pet's health with PetCare Clinic.
                 </p>
               </div>
-              
+              <div>
+                <a
+                  href="/PetCareClinic.apk"
+                  download="PetCareClinic.apk"
+                  className="btn-p"
+                  style={{
+                    background: '#fff',
+                    color: 'var(--teal)',
+                    padding: '0.9rem 1.8rem',
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.05em',
+                    boxShadow: '0 12px 28px rgba(0,0,0,0.2)',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <Download size={16} /> Download Android App (.apk)
+                </a>
+              </div>
             </div>
           </section>
 

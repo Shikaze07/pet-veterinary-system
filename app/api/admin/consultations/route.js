@@ -7,17 +7,20 @@ export async function GET(request) {
     const page = parseInt(searchParams.get("page") ?? "1", 10);
     const pageSize = parseInt(searchParams.get("pageSize") ?? "10", 10);
     const search = searchParams.get("search") ?? "";
+    const ownerId = searchParams.get("ownerId") ?? "";
+    const petId = searchParams.get("petId") ?? "";
     const skip = (page - 1) * pageSize;
 
-    const where = search 
-      ? {
-          OR: [
-            { symptoms: { contains: search } },
-            { diagnosis: { contains: search } },
-            { pet: { name: { contains: search } } },
-          ]
-        }
-      : {};
+    const where = {
+      ...(search ? {
+        OR: [
+          { symptoms: { contains: search } },
+          { diagnosis: { contains: search } },
+          { pet: { name: { contains: search } } },
+        ]
+      } : {}),
+      ...(petId ? { petId } : (ownerId ? { pet: { ownerId } } : {}))
+    };
 
     const [consultations, total] = await Promise.all([
       prisma.consultation.findMany({
