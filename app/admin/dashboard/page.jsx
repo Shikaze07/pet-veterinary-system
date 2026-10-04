@@ -16,7 +16,38 @@ import {
   Activity,
   FileText,
   AlertTriangle,
+  Wallet,
 } from "lucide-react"
+
+export const dynamic = "force-dynamic"
+
+const peso = (n) => `₱${Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+
+async function getRevenue() {
+  const now = new Date()
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+  try {
+    const [all, month, today, items] = await Promise.all([
+      prisma.costing.aggregate({ _sum: { totalAmount: true }, _count: true }),
+      prisma.costing.aggregate({ _sum: { totalAmount: true }, where: { date: { gte: startOfMonth } } }),
+      prisma.costing.aggregate({ _sum: { totalAmount: true }, where: { date: { gte: startOfToday } } }),
+      prisma.costingItem.groupBy({ by: ["category"], _sum: { total: true }, where: { costing: { date: { gte: startOfMonth } } } }),
+    ])
+    return {
+      total: all._sum.totalAmount || 0,
+      count: all._count || 0,
+      month: month._sum.totalAmount || 0,
+      today: today._sum.totalAmount || 0,
+      byCategory: items.map((i) => ({ category: i.category, total: i._sum.total || 0 })).sort((a, b) => b.total - a.total),
+    }
+  } catch (error) {
+    console.error("Revenue fetch error:", error)
+    return { total: 0, count: 0, month: 0, today: 0, byCategory: [] }
+  }
+}
+
+const CATEGORY_LABEL = { CONSULTATION: "Consultation", MEDICATION: "Medicine", VACCINATION: "Vaccination", OTHER: "Other" }
 
 async function getDashboardData() {
   const now = new Date()
@@ -165,6 +196,7 @@ async function getDashboardData() {
 
 export default async function DashboardPage() {
   const data = await getDashboardData()
+  const revenue = await getRevenue()
   const {
     stats,
     upcomingAppointments,
@@ -282,6 +314,63 @@ export default async function DashboardPage() {
           </div>
           <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
             <Syringe className="h-6 w-6" />
+          </div>
+        </div>
+      </div>
+
+      {/* Revenue Overview */}
+      <div className="rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
+        <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <Wallet className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-slate-900 font-outfit text-base">Revenue</h3>
+              <p className="text-xs text-slate-500 font-inter">Based on recorded costings</p>
+            </div>
+          </div>
+          <Button asChild variant="ghost" size="sm" className="gap-1 text-primary hover:text-primary hover:bg-primary/10 text-xs font-medium">
+            <Link href="/admin/costing">
+              <span>View Costing</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:col-span-2">
+            {[
+              { label: "Today", value: revenue.today },
+              { label: "This Month", value: revenue.month },
+              { label: "All Time", value: revenue.total, sub: `${revenue.count} costing records` },
+            ].map((r) => (
+              <div key={r.label} className="p-4 rounded-lg border border-slate-100 bg-slate-50/50">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{r.label}</span>
+                <p className="text-2xl font-bold font-outfit text-slate-900 tabular-nums mt-1">{peso(r.value)}</p>
+                {r.sub && <p className="text-xs text-slate-400 mt-0.5">{r.sub}</p>}
+              </div>
+            ))}
+          </div>
+          <div className="space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">This Month by Category</p>
+            {revenue.byCategory.length === 0 ? (
+              <p className="text-xs text-slate-400 italic">No revenue recorded this month.</p>
+            ) : (
+              revenue.byCategory.map((c) => {
+                const percent = Math.round((c.total / (revenue.month || 1)) * 100)
+                return (
+                  <div key={c.category} className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-medium text-slate-700">{CATEGORY_LABEL[c.category] || c.category}</span>
+                      <span className="text-slate-500 tabular-nums">{peso(c.total)} ({percent}%)</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-primary rounded-full" style={{ width: `${percent}%` }} />
+                    </div>
+                  </div>
+                )
+              })
+            )}
           </div>
         </div>
       </div>

@@ -104,10 +104,7 @@ export function LogMedicalRecordModal() {
   const onConsultSubmit = async (data) => {
     setIsSubmitting(true)
     try {
-      const payload = {
-        ...data,
-        cost: "0", // Zero cost, purely clinical recording
-      }
+      const payload = { ...data }
       const res = await fetch("/api/admin/consultations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

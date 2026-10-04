@@ -19,9 +19,11 @@ enum AppointmentStatus {
   COMPLETED
 }
 
-enum InvoiceStatus {
-  UNPAID
-  PAID
+enum CostingCategory {
+  CONSULTATION
+  MEDICATION
+  VACCINATION
+  OTHER
 }
 
 model User {
@@ -37,7 +39,7 @@ model User {
   createdAt DateTime @default(now())
 
   pets          Pet[]
-  invoices      Invoice[]
+  costings      Costing[]
   appointments  Appointment[]
 }
 
@@ -56,7 +58,7 @@ model Pet {
 
   consultations Consultation[]
   vaccinations  Vaccination[]
-  invoices      Invoice[]   
+  costings      Costing[]
   appointments  Appointment[]
 }
 
@@ -67,7 +69,6 @@ model Consultation {
   symptoms    String
   diagnosis   String
   treatment   String
-  cost        Float
 
   pet         Pet      @relation(fields: [petId], references: [id])
 }
@@ -84,13 +85,15 @@ model Vaccination {
 }
 
 model Medication {
-  id           String  @id @default(uuid())
+  id           String        @id @default(uuid())
   name         String
   brand        String?
   category     String?
   stock        Int
   minStock     Int
   price        Float
+
+  costingItems CostingItem[]
 }
 
 model Appointment {
@@ -106,27 +109,30 @@ model Appointment {
   pet       Pet    @relation(fields: [petId], references: [id])
 }
 
-model Invoice {
+model Costing {
   id          String        @id @default(uuid())
   ownerId     String
   petId       String?
+  date        DateTime      @default(now())
+  notes       String?
   totalAmount Float
-  dueDate     DateTime
-  status      InvoiceStatus @default(UNPAID)
 
   owner       User          @relation(fields: [ownerId], references: [id])
   pet         Pet?          @relation(fields: [petId], references: [id])
 
-  items       InvoiceItem[]
+  items       CostingItem[]
 }
 
-model InvoiceItem {
-  id          String  @id @default(uuid())
-  invoiceId   String
-  description String
-  quantity    Int
-  price       Float
-  total       Float
+model CostingItem {
+  id           String          @id @default(uuid())
+  costingId    String
+  medicationId String?
+  category     CostingCategory
+  description  String
+  quantity     Int             @default(1)
+  price        Float
+  total        Float
 
-  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+  costing      Costing         @relation(fields: [costingId], references: [id], onDelete: Cascade)
+  medication   Medication?     @relation(fields: [medicationId], references: [id], onDelete: SetNull)
 }

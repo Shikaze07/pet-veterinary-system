@@ -47,9 +47,7 @@ async function getStats() {
   }
 }
 
-async function getMedicalRecords(page, pageSize, search, species) {
-  const skip = (page - 1) * pageSize
-
+async function getMedicalRecords(page, pageSize, search, species, type) {
   try {
     const andConditions = []
 
@@ -67,63 +65,60 @@ async function getMedicalRecords(page, pageSize, search, species) {
     }
 
     if (species && species !== "all") {
-      andConditions.push({
-        species: { equals: species },
-      })
+      andConditions.push({ species: { equals: species } })
     }
 
-    const where = andConditions.length > 0 ? { AND: andConditions } : {}
+    const petWhere = andConditions.length > 0 ? { AND: andConditions } : {}
+    const where = andConditions.length > 0 ? { pet: petWhere } : {}
+    const petInclude = {
+      include: {
+        owner: { select: { id: true, firstName: true, lastName: true, email: true, phone: true } },
+      },
+    }
 
-    const [pets, total] = await Promise.all([
-      prisma.pet.findMany({
-        where,
-        skip,
-        take: pageSize,
-        include: {
-          owner: {
-            select: {
-              id: true,
-              firstName: true,
-              middleName: true,
-              lastName: true,
-              email: true,
-              phone: true,
-              address: true,
-            },
-          },
-          consultations: {
-            orderBy: { date: "desc" },
-          },
-          vaccinations: {
-            orderBy: { dateGiven: "desc" },
-          },
-          appointments: {
-            orderBy: { date: "desc" },
-          },
-        },
-        orderBy: { name: "asc" },
-      }),
-      prisma.pet.count({ where }),
+    const want = (t) => type === "all" || type === t
+    const [consultations, vaccinations, appointments] = await Promise.all([
+      want("consultation") ? prisma.consultation.findMany({ where, include: { pet: petInclude } }) : [],
+      want("vaccination") ? prisma.vaccination.findMany({ where, include: { pet: petInclude } }) : [],
+      want("appointment") ? prisma.appointment.findMany({ where, include: { pet: petInclude } }) : [],
     ])
 
+    const records = [
+      ...consultations.map((r) => ({
+        id: `c-${r.id}`, type: "consultation", date: r.date, pet: r.pet,
+        summary: r.diagnosis, symptoms: r.symptoms, treatment: r.treatment,
+      })),
+      ...vaccinations.map((r) => ({
+        id: `v-${r.id}`, type: "vaccination", date: r.dateGiven, pet: r.pet,
+        summary: r.vaccineName, nextDue: r.nextDue, notes: r.notes,
+      })),
+      ...appointments.map((r) => ({
+        id: `a-${r.id}`, type: "appointment", date: r.date, pet: r.pet,
+        summary: r.reason, status: r.status, notes: r.notes,
+      })),
+    ].sort((a, b) => new Date(b.date) - new Date(a.date))
+
+    const total = records.length
+    const start = (page - 1) * pageSize
+
     return {
-      pets: JSON.parse(JSON.stringify(pets)),
+      records: JSON.parse(JSON.stringify(records.slice(start, start + pageSize))),
       total,
       page,
       pageSize,
     }
   } catch (error) {
     console.error("Database fetch error (medical records):", error)
-    return { pets: [], total: 0, page, pageSize }
+    return { records: [], total: 0, page, pageSize }
   }
 }
 
-async function MedicalRecordsTable({ page, pageSize, search, species }) {
-  const { pets, total } = await getMedicalRecords(page, pageSize, search, species)
+async function MedicalRecordsTable({ page, pageSize, search, species, type }) {
+  const { records, total } = await getMedicalRecords(page, pageSize, search, species, type)
 
   return (
     <MedicalRecordsClient
-      pets={pets}
+      records={records}
       total={total}
       page={page}
       pageSize={pageSize}
@@ -156,6 +151,7 @@ export default async function MedicalRecordsPage({ searchParams }) {
   const pageSizeNum = parseInt(params.pageSize || "10", 10)
   const search = params.search || ""
   const species = params.species || "all"
+  const type = params.type || "all"
 
   const {
     totalPets,
@@ -254,6 +250,7 @@ export default async function MedicalRecordsPage({ searchParams }) {
           pageSize={pageSizeNum}
           search={search}
           species={species}
+          type={type}
         />
       </Suspense>
     </div>

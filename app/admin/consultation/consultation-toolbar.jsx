@@ -7,7 +7,7 @@ import { useState, useEffect } from "react"
 import { useDebounce } from "use-debounce"
 import { AddConsultationModal } from "./components/add-consultation-modal"
 
-export function ConsultationToolbar() {
+export function ConsultationToolbar({ pets = [] }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(searchParams.get("search") || "")
@@ -34,7 +34,7 @@ export function ConsultationToolbar() {
           onChange={(e) => setSearchValue(e.target.value)}
         />
       </div>
-      <AddConsultationModal />
+      <AddConsultationModal pets={pets} />
     </div>
   )
 }

@@ -39,6 +39,7 @@ export function AddVaccinationModal() {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [pets, setPets] = useState([])
+  const [medications, setMedications] = useState([])
   const [isLoadingPets, setIsLoadingPets] = useState(false)
   const router = useRouter()
 
@@ -58,23 +59,31 @@ export function AddVaccinationModal() {
 
   const petIdValue = watch("petId")
 
-  // Fetch pets for the dropdown
+  // Fetch pets and medications for dropdowns
   useEffect(() => {
     if (open) {
-      const fetchPets = async () => {
+      const fetchData = async () => {
         setIsLoadingPets(true)
         try {
-          const response = await fetch("/api/admin/pets?pageSize=500")
-          if (!response.ok) throw new Error("Failed to fetch pets")
-          const data = await response.json()
-          setPets(data.pets || [])
+          const [petsRes, medsRes] = await Promise.all([
+            fetch("/api/admin/pets?pageSize=500"),
+            fetch("/api/admin/medications?pageSize=500"),
+          ])
+          if (petsRes.ok) {
+            const data = await petsRes.json()
+            setPets(data.pets || [])
+          }
+          if (medsRes.ok) {
+            const data = await medsRes.json()
+            setMedications(data.medications || [])
+          }
         } catch (error) {
-          toast.error("Could not load pets list")
+          toast.error("Could not load form options")
         } finally {
           setIsLoadingPets(false)
         }
       }
-      fetchPets()
+      fetchData()
     }
   }, [open])
 
@@ -143,11 +152,18 @@ export function AddVaccinationModal() {
 
           <Field>
             <FieldLabel htmlFor="vaccineName">Vaccine Name *</FieldLabel>
-            <Input
-              id="vaccineName"
-              placeholder="e.g. Anti-Rabies, DHPP"
-              {...register("vaccineName")}
-              disabled={isSubmitting}
+            <Combobox
+              options={medications.map((m) => ({
+                value: m.name,
+                label: `${m.name}${m.brand ? ` (${m.brand})` : ""} — Stock: ${m.stock}`,
+                searchTerms: `${m.brand || ""} ${m.category || ""}`,
+              }))}
+              value={watch("vaccineName")}
+              onValueChange={(v) => setValue("vaccineName", v, { shouldValidate: true })}
+              placeholder={isLoadingPets ? "Loading inventory..." : "Search vaccine in inventory..."}
+              searchPlaceholder="Search by name, brand or category..."
+              emptyMessage="No matching item in inventory."
+              disabled={isSubmitting || isLoadingPets}
             />
             <FieldError errors={[errors.vaccineName]} />
           </Field>

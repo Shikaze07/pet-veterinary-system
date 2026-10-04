@@ -6,7 +6,7 @@ import { DataTable } from "./data-table"
 import { useCallback } from "react"
 
 export function MedicalRecordsClient({
-  pets,
+  records,
   total,
   page,
   pageSize,
@@ -40,15 +40,15 @@ export function MedicalRecordsClient({
     <div className="space-y-4">
       <div className="flex items-center justify-between px-1">
         <div className="text-xs text-slate-500">
-          Showing active health records & clinical histories
+          One row per consultation, vaccination, or appointment
         </div>
         <div className="text-sm text-slate-500 font-medium">
-          Total <span className="text-slate-900 font-bold">{total}</span> patient chart{total === 1 ? "" : "s"}
+          Total <span className="text-slate-900 font-bold">{total}</span> record{total === 1 ? "" : "s"}
         </div>
       </div>
       <DataTable
         columns={columns}
-        data={pets}
+        data={records}
         pageCount={pageCount}
         pageIndex={page}
         pageSize={pageSize}

@@ -91,6 +91,16 @@ export default async function ConsultationPage({ searchParams }) {
   const pageSizeNum = parseInt(params.pageSize || "10", 10)
   const search = params.search || ""
 
+  const pets = await prisma.pet.findMany({
+    orderBy: { name: "asc" },
+    select: {
+      id: true,
+      name: true,
+      species: true,
+      owner: { select: { firstName: true, lastName: true } },
+    },
+  })
+
   return (
     <div className="container mx-auto px-10 space-y-6">
       <div className="flex flex-col gap-2">
@@ -100,7 +110,7 @@ export default async function ConsultationPage({ searchParams }) {
         </p>
       </div>
 
-      <ConsultationToolbar />
+      <ConsultationToolbar pets={JSON.parse(JSON.stringify(pets))} />
 
       <Suspense fallback={<TableSkeleton />}>
         <ConsultationTable page={pageNum} pageSize={pageSizeNum} search={search} />

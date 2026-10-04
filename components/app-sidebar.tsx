@@ -15,7 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { BriefcaseMedical, PawPrint, LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, CommandIcon, Syringe, Calendar, Pill, Stethoscope, LogOutIcon } from "lucide-react"
+import { ReceiptIcon, BriefcaseMedical, PawPrint, LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, CommandIcon, Syringe, Calendar, Pill, Stethoscope, LogOutIcon } from "lucide-react"
 import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -77,6 +77,11 @@ const data = {
       title: "Medical Records",
       url: "/admin/medical-records",
       icon: <Stethoscope />,
+    },
+    {
+      title: "Costing",
+      url: "/admin/costing",
+      icon: <ReceiptIcon />,
     },
   ],
   navClouds: [

@@ -59,9 +59,9 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { petId, symptoms, diagnosis, treatment, cost, date } = body;
+    const { petId, symptoms, diagnosis, treatment, date } = body;
 
-    if (!petId || !symptoms || !diagnosis || cost === undefined) {
+    if (!petId || !symptoms || !diagnosis) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -74,7 +74,6 @@ export async function POST(request) {
         symptoms,
         diagnosis,
         treatment,
-        cost: parseFloat(cost),
         date: date ? new Date(date) : new Date(),
       },
       include: {

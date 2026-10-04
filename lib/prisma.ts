@@ -32,7 +32,10 @@ const adapter =
     acquireTimeout: 30000,
   });
 
-const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
+// Discard a cached client generated before newer models (e.g. costing) existed
+const cachedPrisma =
+  globalForPrisma.prisma && "costing" in globalForPrisma.prisma ? globalForPrisma.prisma : undefined;
+const prisma = cachedPrisma ?? new PrismaClient({ adapter });
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prismaAdapter = adapter;

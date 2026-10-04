@@ -51,7 +51,12 @@ export function DataTable({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="font-semibold text-slate-900 py-3.5">
+                    <TableHead
+                      key={header.id}
+                      className={`font-semibold text-slate-900 py-3.5 ${
+                        header.column.columnDef.meta?.headerClassName || ""
+                      }`}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -73,7 +78,12 @@ export function DataTable({
                   className="hover:bg-slate-50/60 transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3">
+                    <TableCell
+                      key={cell.id}
+                      className={`py-3 ${
+                        cell.column.columnDef.meta?.cellClassName || ""
+                      }`}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

@@ -58,11 +58,7 @@ export function AddConsultationQuickModal({ pet, buttonVariant = "default", butt
   const onSubmit = async (data) => {
     setIsSubmitting(true)
     try {
-      // Send cost as 0 to fulfill backend DB schema requirement without invoice/billing involvement
-      const payload = {
-        ...data,
-        cost: "0",
-      }
+      const payload = { ...data }
 
       const response = await fetch("/api/admin/consultations", {
         method: "POST",

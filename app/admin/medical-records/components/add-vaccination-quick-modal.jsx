@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,6 +25,7 @@ import {
   FieldLabel,
   FieldError,
 } from "@/components/ui/field"
+import { Combobox } from "@/components/ui/combobox"
 
 const vaccinationSchema = z.object({
   petId: z.string().min(1, "Pet is required"),
@@ -37,11 +38,14 @@ const vaccinationSchema = z.object({
 export function AddVaccinationQuickModal({ pet, buttonVariant = "default", buttonText = "Log Vaccination", onAdded }) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [medications, setMedications] = useState([])
   const router = useRouter()
 
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     reset,
     formState: { errors },
   } = useForm({
@@ -54,6 +58,16 @@ export function AddVaccinationQuickModal({ pet, buttonVariant = "default", butto
       notes: "",
     },
   })
+
+  // Fetch medications for dropdown
+  useEffect(() => {
+    if (open) {
+      fetch("/api/admin/medications?pageSize=500")
+        .then((res) => res.json())
+        .then((data) => setMedications(data.medications || []))
+        .catch(() => {})
+    }
+  }, [open])
 
   const onSubmit = async (data) => {
     setIsSubmitting(true)
@@ -124,10 +138,18 @@ export function AddVaccinationQuickModal({ pet, buttonVariant = "default", butto
 
           <Field>
             <FieldLabel htmlFor="vaccineName">Vaccine Name / Type *</FieldLabel>
-            <Input
-              id="vaccineName"
-              placeholder="e.g. Rabies, DHPP, Bordetella, FVRCP..."
-              {...register("vaccineName")}
+            <Combobox
+              options={medications.map((m) => ({
+                value: m.name,
+                label: `${m.name}${m.brand ? ` (${m.brand})` : ""} — Stock: ${m.stock}`,
+                searchTerms: `${m.brand || ""} ${m.category || ""}`,
+              }))}
+              value={watch("vaccineName")}
+              onValueChange={(v) => setValue("vaccineName", v, { shouldValidate: true })}
+              placeholder="Search vaccine in inventory..."
+              searchPlaceholder="Search by name, brand or category..."
+              emptyMessage="No matching item in inventory."
+              disabled={isSubmitting}
             />
             {errors.vaccineName && <FieldError>{errors.vaccineName.message}</FieldError>}
           </Field>

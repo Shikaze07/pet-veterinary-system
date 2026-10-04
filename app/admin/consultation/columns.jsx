@@ -1,7 +1,6 @@
 "use client"
 
-import { EditConsultationModal } from "./components/edit-consultation-modal"
-import { DeleteConsultationDialog } from "./components/delete-consultation-dialog"
+import { ViewConsultationModal } from "./components/view-consultation-modal"
 
 export const columns = [
   {
@@ -61,31 +60,8 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "cost",
-    header: "Cost",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.original.cost)
-      return new Intl.NumberFormat("en-PH", {
-        style: "currency",
-        currency: "PHP",
-      }).format(amount)
-    },
-  },
-  {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
-      const consultation = row.original
-
-      return (
-        <div className="flex items-center gap-2">
-          <EditConsultationModal consultation={consultation} />
-          <DeleteConsultationDialog 
-            consultationId={consultation.id} 
-            petName={consultation.pet?.name || "this consultation"} 
-          />
-        </div>
-      )
-    },
+    cell: ({ row }) => <ViewConsultationModal consultation={row.original} />,
   },
 ]

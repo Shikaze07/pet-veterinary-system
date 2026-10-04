@@ -21,13 +21,16 @@ export function MedicalRecordsToolbar({ availableSpecies = [] }) {
 
   const [searchValue, setSearchValue] = useState(searchParams.get("search") || "")
   const [speciesFilter, setSpeciesFilter] = useState(searchParams.get("species") || "all")
+  const [typeFilter, setTypeFilter] = useState(searchParams.get("type") || "all")
   const [debouncedSearch] = useDebounce(searchValue, 400)
 
   useEffect(() => {
     const currentSearch = searchParams.get("search") || ""
     const currentSpecies = searchParams.get("species") || "all"
 
-    if (debouncedSearch !== currentSearch || speciesFilter !== currentSpecies) {
+    const currentType = searchParams.get("type") || "all"
+
+    if (debouncedSearch !== currentSearch || speciesFilter !== currentSpecies || typeFilter !== currentType) {
       const params = new URLSearchParams(searchParams.toString())
 
       if (debouncedSearch) {
@@ -42,18 +45,25 @@ export function MedicalRecordsToolbar({ availableSpecies = [] }) {
         params.delete("species")
       }
 
+      if (typeFilter && typeFilter !== "all") {
+        params.set("type", typeFilter)
+      } else {
+        params.delete("type")
+      }
+
       params.set("page", "1")
       router.push(`/admin/medical-records?${params.toString()}`)
     }
-  }, [debouncedSearch, speciesFilter, router, searchParams])
+  }, [debouncedSearch, speciesFilter, typeFilter, router, searchParams])
 
   const clearFilters = () => {
     setSearchValue("")
     setSpeciesFilter("all")
+    setTypeFilter("all")
     router.push("/admin/medical-records")
   }
 
-  const hasActiveFilters = Boolean(searchValue || (speciesFilter && speciesFilter !== "all"))
+  const hasActiveFilters = Boolean(searchValue || (speciesFilter && speciesFilter !== "all") || typeFilter !== "all")
 
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
@@ -66,6 +76,20 @@ export function MedicalRecordsToolbar({ availableSpecies = [] }) {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
+        </div>
+
+        <div className="w-full sm:w-[170px]">
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="bg-white border-slate-200">
+              <SelectValue placeholder="All Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="consultation">Consultations</SelectItem>
+              <SelectItem value="vaccination">Vaccinations</SelectItem>
+              <SelectItem value="appointment">Appointments</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="w-full sm:w-[180px]">
