@@ -197,35 +197,36 @@ export function CostingClient({ costings, owners, medications }) {
             <section className="space-y-2">
               <h3 className="text-sm font-semibold text-slate-700">1. Client &amp; Pet</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <select className={selectCls} value={ownerId} onChange={(e) => { setOwnerId(e.target.value); setPetId("") }}>
-                  <option value="">Select client…</option>
-                  {owners.map((o) => <option key={o.id} value={o.id}>{o.firstName} {o.lastName}</option>)}
-                </select>
-                <select className={selectCls} value={petId} onChange={(e) => setPetId(e.target.value)} disabled={!ownerId}>
-                  <option value="">{ownerId ? "Select pet (optional)…" : "Select a client first"}</option>
-                  {pets.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </select>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-600">Client <span className="text-red-500">*</span></label>
+                  <select className={selectCls} value={ownerId} onChange={(e) => { setOwnerId(e.target.value); setPetId("") }}>
+                    <option value="">Select client…</option>
+                    {owners.map((o) => <option key={o.id} value={o.id}>{o.firstName} {o.lastName}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-600">Pet (Optional)</label>
+                  <select className={selectCls} value={petId} onChange={(e) => setPetId(e.target.value)} disabled={!ownerId}>
+                    <option value="">{ownerId ? "Select pet (optional)…" : "Select a client first"}</option>
+                    {pets.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
+                </div>
               </div>
             </section>
 
             <section className="space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold text-slate-700">2. Charges</h3>
-                <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-700">2. Charges &amp; Items</h3>
+                  <p className="text-xs text-slate-500">Add services, medicines, or vaccinations</p>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
                   {Object.entries(CATEGORY_META).map(([key, m]) => (
-                    <Button key={key} type="button" variant="outline" size="sm" onClick={() => setItems((p) => [...p, newItem(key)])}>
+                    <Button key={key} type="button" variant="outline" size="sm" className="h-8 text-xs font-medium" onClick={() => setItems((p) => [...p, newItem(key)])}>
                       <m.icon className="size-3.5 mr-1" /> Add {m.label}
                     </Button>
                   ))}
                 </div>
-              </div>
-
-              <div className="hidden sm:grid grid-cols-12 gap-2 px-1 text-xs font-medium text-slate-500">
-                <span className="col-span-5">Description / Inventory</span>
-                <span className="col-span-2">Qty</span>
-                <span className="col-span-2">Unit Price</span>
-                <span className="col-span-2 text-right">Total</span>
-                <span className="col-span-1" />
               </div>
 
               <div className="space-y-3">
@@ -235,84 +236,115 @@ export function CostingClient({ costings, owners, medications }) {
                   const linkedMed = it.medicationId ? medications.find((med) => med.id === it.medicationId) : null
 
                   return (
-                    <div key={idx} className={`rounded-lg border p-3 space-y-2 transition-colors ${errorMsg ? "border-red-300 bg-red-50/20" : "border-slate-200"}`}>
-                      <div className="grid grid-cols-12 gap-2 items-center">
-                        <div className="col-span-12 sm:col-span-5 flex flex-col gap-1.5">
-                          <div className="flex items-center gap-2">
-                            <span className={`shrink-0 inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium ${m.color}`}>
-                              <m.icon className="size-3.5" /> {m.label}
-                            </span>
-                            {it.category === "MEDICATION" || it.category === "VACCINATION" ? (
-                              <Combobox
-                                options={medications.map((med) => ({
-                                  value: med.id,
-                                  label: `${med.name} — ${peso(med.price)} (Stock: ${med.stock})`,
-                                  searchTerms: med.name,
-                                }))}
-                                value={it.medicationId || ""}
-                                onValueChange={(v) => pickMedication(idx, v)}
-                                placeholder={`Search ${m.label.toLowerCase()} in inventory...`}
-                                searchPlaceholder="Search inventory..."
-                                emptyMessage="No matching item in inventory."
-                              />
-                            ) : (
-                              <Input
-                                placeholder={m.placeholder}
-                                value={it.description}
-                                onChange={(e) => updateItem(idx, { description: e.target.value })}
-                              />
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="col-span-4 sm:col-span-2">
-                          <Input
-                            type="number"
-                            min="1"
-                            max={linkedMed ? linkedMed.stock : undefined}
-                            placeholder="Qty"
-                            value={it.quantity}
-                            className={errorMsg && errorMsg.includes("Stock") ? "border-red-500 focus-visible:ring-red-500" : ""}
-                            onChange={(e) => updateItem(idx, { quantity: e.target.value })}
-                          />
+                    <div
+                      key={idx}
+                      className={`rounded-xl border p-4 space-y-3 transition-all ${
+                        errorMsg ? "border-red-300 bg-red-50/20 shadow-2xs" : "border-slate-200 bg-slate-50/40 hover:bg-white hover:border-slate-300 shadow-2xs"
+                      }`}
+                    >
+                      {/* Card Header: Category & Subtotal & Delete */}
+                      <div className="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-semibold text-slate-400">#{idx + 1}</span>
+                          <span className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ${m.color}`}>
+                            <m.icon className="size-3.5" /> {m.label}
+                          </span>
                           {linkedMed && (
-                            <span className="text-[10px] text-slate-500 mt-0.5 block">
-                              Stock: {linkedMed.stock}
+                            <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                              In Stock: {linkedMed.stock}
                             </span>
                           )}
                         </div>
 
-                        <div className="col-span-4 sm:col-span-2">
-                          <Input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            placeholder="Price"
-                            value={it.price}
-                            onChange={(e) => updateItem(idx, { price: e.target.value })}
-                          />
-                        </div>
-
-                        <div className="col-span-3 sm:col-span-2 text-right font-medium text-sm text-slate-900">
-                          {peso(lineTotal(it))}
-                        </div>
-
-                        <div className="col-span-1 text-right">
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider block">Item Total</span>
+                            <span className="text-sm font-bold text-slate-900">{peso(lineTotal(it))}</span>
+                          </div>
                           <Button
                             type="button"
                             variant="ghost"
                             size="icon"
+                            className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
                             disabled={items.length === 1}
                             onClick={() => setItems((p) => p.filter((_, i) => i !== idx))}
+                            title="Remove item"
                           >
-                            <Trash2Icon className="size-4 text-slate-500 hover:text-red-600" />
+                            <Trash2Icon className="size-4" />
                           </Button>
                         </div>
                       </div>
 
+                      {/* Full-width Description / Combobox */}
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-slate-700 block">
+                          {it.category === "MEDICATION" || it.category === "VACCINATION"
+                            ? "Inventory Item"
+                            : "Service / Charge Description"}
+                          <span className="text-red-500 ml-0.5">*</span>
+                        </label>
+                        {it.category === "MEDICATION" || it.category === "VACCINATION" ? (
+                          <Combobox
+                            options={medications.map((med) => ({
+                              value: med.id,
+                              label: `${med.name} — ${peso(med.price)} (Stock: ${med.stock})`,
+                              searchTerms: med.name,
+                            }))}
+                            value={it.medicationId || ""}
+                            onValueChange={(v) => pickMedication(idx, v)}
+                            placeholder={`Search ${m.label.toLowerCase()} in inventory...`}
+                            searchPlaceholder="Search inventory..."
+                            emptyMessage="No matching item in inventory."
+                            className="w-full bg-white"
+                          />
+                        ) : (
+                          <Input
+                            placeholder={m.placeholder}
+                            value={it.description}
+                            onChange={(e) => updateItem(idx, { description: e.target.value })}
+                            className="w-full bg-white"
+                          />
+                        )}
+                      </div>
+
+                      {/* Separate Quantity & Unit Price Row */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <label className="text-xs font-medium text-slate-700">Quantity <span className="text-red-500">*</span></label>
+                            {linkedMed && (
+                              <span className="text-[11px] text-slate-500">Max available: {linkedMed.stock}</span>
+                            )}
+                          </div>
+                          <Input
+                            type="number"
+                            min="1"
+                            max={linkedMed ? linkedMed.stock : undefined}
+                            placeholder="e.g. 1"
+                            value={it.quantity}
+                            className={`bg-white ${errorMsg && errorMsg.includes("Stock") ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            onChange={(e) => updateItem(idx, { quantity: e.target.value })}
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-slate-700">Unit Price (₱) <span className="text-red-500">*</span></label>
+                          <Input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="0.00"
+                            value={it.price}
+                            className="bg-white"
+                            onChange={(e) => updateItem(idx, { price: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Error Banner */}
                       {errorMsg && (
-                        <div className="flex items-center gap-1.5 text-xs text-red-600 font-medium pt-1">
-                          <AlertCircleIcon className="size-3.5 shrink-0" />
+                        <div className="flex items-center gap-1.5 text-xs text-red-600 font-medium bg-red-50 p-2.5 rounded-lg border border-red-200">
+                          <AlertCircleIcon className="size-4 shrink-0" />
                           <span>{errorMsg}</span>
                         </div>
                       )}
@@ -324,12 +356,15 @@ export function CostingClient({ costings, owners, medications }) {
 
             <section className="space-y-2">
               <h3 className="text-sm font-semibold text-slate-700">3. Notes</h3>
-              <Textarea placeholder="Optional notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
+              <Textarea placeholder="Optional notes (e.g. follow-up required, discount reason)" value={notes} onChange={(e) => setNotes(e.target.value)} />
             </section>
           </div>
 
-          <DialogFooter className="items-center sm:justify-between">
-            <div className="text-lg font-semibold text-slate-900">Total: {peso(total)}</div>
+          <DialogFooter className="items-center sm:justify-between border-t border-slate-100 pt-3">
+            <div className="flex flex-col">
+              <span className="text-xs text-slate-500">Total Charges ({items.length} {items.length === 1 ? "item" : "items"})</span>
+              <span className="text-xl font-bold text-slate-900">{peso(total)}</span>
+            </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
               <Button onClick={save} disabled={saving || !canSave}>
